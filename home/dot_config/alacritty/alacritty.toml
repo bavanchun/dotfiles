@@ -1,0 +1,76 @@
+# ── Font ──────────────────────────────────────────────────────
+[font]
+size = 13.0
+
+[font.normal]
+family = "JetBrainsMono Nerd Font"
+style  = "Regular"
+
+[font.bold]
+family = "JetBrainsMono Nerd Font"
+style  = "Bold"
+
+[font.italic]
+family = "JetBrainsMono Nerd Font"
+style  = "Italic"
+
+# ── Window ────────────────────────────────────────────────────
+[window]
+opacity        = 0.95
+padding.x      = 10
+padding.y      = 8
+decorations    = "None"
+dynamic_title  = true
+
+# ── Cursor ────────────────────────────────────────────────────
+[cursor]
+style.shape    = "Beam"
+style.blinking = "On"
+blink_interval = 500
+
+# ── Scrollback ────────────────────────────────────────────────
+[scrolling]
+history    = 10000
+multiplier = 3
+
+# ── Keyboard ──────────────────────────────────────────────────
+[keyboard]
+bindings = [
+    # Paste bằng Ctrl+V
+    { key = "V", mods = "Control", action = "Paste" },
+    # Tab mới (dùng với tmux/zellij)
+    { key = "T", mods = "Control|Shift", action = "CreateNewWindow" },
+]
+
+# ── Catppuccin Mocha ──────────────────────────────────────────
+[colors.primary]
+background = "#0f0f0f"
+foreground = "#cdd6f4"
+
+[colors.cursor]
+text   = "#1e1e2e"
+cursor = "#f5e0dc"
+
+[colors.selection]
+text       = "#1e1e2e"
+background = "#89b4fa"
+
+[colors.normal]
+black   = "#45475a"
+red     = "#f38ba8"
+green   = "#a6e3a1"
+yellow  = "#f9e2af"
+blue    = "#89b4fa"
+magenta = "#cba6f7"
+cyan    = "#94e2d5"
+white   = "#bac2de"
+
+[colors.bright]
+black   = "#585b70"
+red     = "#f38ba8"
+green   = "#a6e3a1"
+yellow  = "#f9e2af"
+blue    = "#89b4fa"
+magenta = "#cba6f7"
+cyan    = "#94e2d5"
+white   = "#a6adc8"
