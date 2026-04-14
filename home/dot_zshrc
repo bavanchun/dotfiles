@@ -30,7 +30,7 @@ zinit light-mode for \
 
 # Plugins
 zinit light zsh-users/zsh-autosuggestions
-zinit light zsh-users/zsh-syntax-highlighting
+zinit light zdharma-continuum/fast-syntax-highlighting   # replaces zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
 zinit snippet OMZ::plugins/git/git.plugin.zsh
 zinit snippet OMZ::plugins/alias-finder/alias-finder.plugin.zsh
@@ -38,6 +38,20 @@ zinit ice atclone'local base="https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/
 zinit snippet OMZ::plugins/tmux/tmux.plugin.zsh
 zinit light z-shell/zsh-eza
 zinit light djui/alias-tips
+
+# fzf-tab: replace default completion with fzf (load after compinit, before other completion plugins)
+zinit light Aloxaf/fzf-tab
+
+# History substring search: type partial command then ↑/↓ to search history
+zinit light zsh-users/zsh-history-substring-search
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+# forgit: interactive git commands powered by fzf (ga, glo, gd, gcb, ...)
+zinit light wfxr/forgit
+
+# zoxide: smarter cd with frecency (z <partial-path>)
+eval "$(zoxide init zsh)"
 
 ### End of Zinit's installer chunk
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
