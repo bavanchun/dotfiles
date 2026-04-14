@@ -1,11 +1,25 @@
 eval "$(starship init zsh)"
 
 export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 export PATH="$HOME/.local/bin:$PATH"
 if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+if [[ -s "$NVM_DIR/nvm.sh" ]]; then
+    . "$NVM_DIR/nvm.sh" --no-use
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+    __nvm_use_default() {
+        unfunction node npm npx corepack codex gemini 2>/dev/null
+        nvm use --silent default >/dev/null 2>&1 || nvm use --silent node >/dev/null
+    }
+
+    node() { __nvm_use_default; command node "$@"; }
+    npm() { __nvm_use_default; command npm "$@"; }
+    npx() { __nvm_use_default; command npx "$@"; }
+    corepack() { __nvm_use_default; command corepack "$@"; }
+    codex() { __nvm_use_default; command codex "$@"; }
+    gemini() { __nvm_use_default; command gemini "$@"; }
 fi
 
 #export claude="/home/vchun/.local/bin/claude"
