@@ -34,7 +34,7 @@ zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
 zinit snippet OMZ::plugins/git/git.plugin.zsh
 zinit snippet OMZ::plugins/alias-finder/alias-finder.plugin.zsh
-zinit snippet OMZ::plugins/tmux/tmux.plugin.zsh
+zinit snippet OMZ::plugins/tmux
 zinit light z-shell/zsh-eza
 zinit light djui/alias-tips
 
