@@ -4,6 +4,9 @@ export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 export PATH="$HOME/.local/bin:$PATH"
+if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
 
 #export claude="/home/vchun/.local/bin/claude"
 
@@ -54,7 +57,6 @@ zinit light wfxr/forgit
 eval "$(zoxide init zsh)"
 
 ### End of Zinit's installer chunk
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 # Run Codex with separate local state per account so two accounts can stay logged in at once.
 alias codex1='CODEX_HOME=$HOME/.codex-account-1 codex'
