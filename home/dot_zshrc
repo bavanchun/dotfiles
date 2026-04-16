@@ -50,6 +50,9 @@ zinit light zsh-users/zsh-autosuggestions
 zinit light zdharma-continuum/fast-syntax-highlighting   # replaces zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
 zinit snippet OMZ::plugins/git/git.plugin.zsh
+zinit snippet OMZ::plugins/docker/docker.plugin.zsh
+zinit snippet OMZ::plugins/docker-compose/docker-compose.plugin.zsh
+zinit snippet OMZ::plugins/kubectl/kubectl.plugin.zsh
 zinit snippet OMZ::plugins/alias-finder/alias-finder.plugin.zsh
 zinit ice atclone'local base="https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/plugins/tmux"; curl -sL "$base/tmux.extra.conf" -o tmux.extra.conf; curl -sL "$base/tmux.only.conf" -o tmux.only.conf' atpull'%atclone'
 zinit snippet OMZ::plugins/tmux/tmux.plugin.zsh
@@ -69,6 +72,16 @@ zinit light wfxr/forgit
 
 # zoxide: smarter cd with frecency (z <partial-path>)
 eval "$(zoxide init zsh)"
+
+# Docker Compose v2 is exposed as `docker compose`; keep compose aliases usable
+# on systems without the legacy `docker-compose` binary.
+if command -v docker >/dev/null 2>&1 && ! command -v docker-compose >/dev/null 2>&1; then
+    alias docker-compose='docker compose'
+fi
+
+if command -v kubectl >/dev/null 2>&1; then
+    alias k=kubectl
+fi
 
 ### End of Zinit's installer chunk
 
