@@ -70,51 +70,10 @@ zinit light wfxr/forgit
 # zoxide: smarter cd with frecency (z <partial-path>)
 eval "$(zoxide init zsh)"
 
-# Docker, Docker Compose, and Kubernetes aliases.
-if command -v docker >/dev/null 2>&1; then
-    alias d='docker'
-    alias dps='docker ps'
-    alias dpa='docker ps -a'
-    alias di='docker images'
-    alias dex='docker exec -it'
-    alias dlog='docker logs'
-    alias dlogf='docker logs -f'
-    alias drm='docker rm'
-    alias drmi='docker rmi'
-    alias dst='docker start'
-    alias dstp='docker stop'
-    alias dre='docker restart'
-    alias dprune='docker system prune'
-
-    alias dco='docker compose'
-    alias dcb='docker compose build'
-    alias dcup='docker compose up'
-    alias dcupd='docker compose up -d'
-    alias dcdn='docker compose down'
-    alias dcl='docker compose logs'
-    alias dclf='docker compose logs -f'
-    alias dcps='docker compose ps'
-    alias dce='docker compose exec'
-    alias dcr='docker compose run --rm'
-
-    if ! command -v docker-compose >/dev/null 2>&1; then
-        alias docker-compose='docker compose'
-    fi
-fi
-
-if command -v kubectl >/dev/null 2>&1; then
-    alias k='kubectl'
-    alias kgp='kubectl get pods'
-    alias kgs='kubectl get svc'
-    alias kgn='kubectl get nodes'
-    alias kga='kubectl get all'
-    alias kaf='kubectl apply -f'
-    alias kdel='kubectl delete'
-    alias kdesc='kubectl describe'
-    alias klog='kubectl logs'
-    alias klogf='kubectl logs -f'
-    alias kex='kubectl exec -it'
-fi
+# Docker, Docker Compose, and Kubernetes — via OMZ plugins
+zinit snippet OMZ::plugins/docker/docker.plugin.zsh
+zinit snippet OMZ::plugins/docker-compose/docker-compose.plugin.zsh
+zinit snippet OMZ::plugins/kubectl/kubectl.plugin.zsh
 
 ### End of Zinit's installer chunk
 
