@@ -70,6 +70,11 @@ zinit light wfxr/forgit
 # zoxide: smarter cd with frecency (z <partial-path>)
 eval "$(zoxide init zsh)"
 
+# Tiện ích hàng ngày
+zinit snippet OMZ::plugins/sudo/sudo.plugin.zsh
+zinit snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
+zinit snippet OMZ::plugins/extract/extract.plugin.zsh
+
 # Docker, Docker Compose, and Kubernetes — via OMZ plugins
 zinit snippet OMZ::plugins/docker/docker.plugin.zsh
 zinit snippet OMZ::plugins/docker-compose/docker-compose.plugin.zsh
