@@ -6,17 +6,17 @@ config.front_end = "OpenGL"
 
 -- ── Font ──────────────────────────────────────────────────────
 config.font = wezterm.font("JetBrainsMono Nerd Font")
-config.font_size = 13.0
+config.font_size = 11.0
 
--- ── Catppuccin Mocha theme ────────────────────────────────────
+-- ── Colors (Catppuccin Mocha, matched to kitty) ───────────────
 config.colors = {
-    foreground = "#cdd6f4",
-    background = "#1e1e2e",
-    cursor_bg  = "#f5e0dc",
-    cursor_fg  = "#1e1e2e",
+    foreground    = "#cdd6f4",
+    background    = "#0f0f0f",   -- kitty custom (darker than mocha default)
+    cursor_bg     = "#f5e0dc",
+    cursor_fg     = "#1e1e2e",
     cursor_border = "#f5e0dc",
-    selection_fg = "#1e1e2e",
-    selection_bg = "#89b4fa",
+    selection_fg  = "#1e1e2e",
+    selection_bg  = "#89b4fa",
 
     ansi = {
         "#45475a", -- black
@@ -37,6 +37,16 @@ config.colors = {
         "#cba6f7", -- bright magenta
         "#94e2d5", -- bright cyan
         "#a6adc8", -- bright white
+    },
+
+    -- Extended 256-color overrides: fix starship prompt colors in kitty
+    indexed = {
+        [232] = "#080808", [233] = "#121212", [234] = "#1c1c1c",
+        [235] = "#262626", [236] = "#303030", [237] = "#3a3a3a",
+        [238] = "#444444", [239] = "#4e4e4e", [244] = "#808080",
+        [245] = "#8a8a8a", [248] = "#a8a8a8", [249] = "#b2b2b2",
+        [250] = "#bcbcbc", [251] = "#c6c6c6", [252] = "#d0d0d0",
+        [253] = "#dadada", [254] = "#e4e4e4", [255] = "#eeeeee",
     },
 
     tab_bar = {
@@ -67,7 +77,7 @@ config.colors = {
 
 -- ── Window ────────────────────────────────────────────────────
 config.window_background_opacity = 0.92
-config.window_padding = { left = 10, right = 10, top = 8, bottom = 8 }
+config.window_padding = { left = 22, right = 22, top = 22, bottom = 22 }
 config.window_decorations = "RESIZE"
 config.initial_cols = 120
 config.initial_rows = 36
@@ -83,25 +93,57 @@ config.tab_max_width = 30
 config.default_cursor_style = "BlinkingBar"
 config.cursor_blink_rate = 500
 
+-- ── Shell ─────────────────────────────────────────────────────
+config.default_prog = { "zsh" }
+
 -- ── Scrollback ────────────────────────────────────────────────
 config.scrollback_lines = 10000
 
+-- ── Copy on select (matches kitty copy_on_select yes) ─────────
+config.mouse_bindings = {
+    {
+        event  = { Up = { streak = 1, button = "Left" } },
+        mods   = "NONE",
+        action = wezterm.action.CompleteSelectionOrOpenLinkAtMouseCursor("ClipboardAndPrimarySelection"),
+    },
+}
+
 -- ── Keybindings ───────────────────────────────────────────────
 config.keys = {
-    -- Paste bằng Ctrl+V
+    -- Ctrl+C: copy if selection exists, otherwise send interrupt (kitty copy_or_interrupt)
+    { key = "c", mods = "CTRL", action = wezterm.action_callback(function(window, pane)
+        if window:get_selection_text_for_pane(pane) ~= "" then
+            window:perform_action(wezterm.action.CopyTo("ClipboardAndPrimarySelection"), pane)
+        else
+            window:perform_action(wezterm.action.SendKey { key = "c", mods = "CTRL" }, pane)
+        end
+    end) },
+
+    -- Paste
     { key = "v", mods = "CTRL", action = wezterm.action.PasteFrom("Clipboard") },
 
-    -- Tab mới
-    { key = "t", mods = "CTRL|SHIFT", action = wezterm.action.SpawnTab("CurrentPaneDomain") },
+    -- Search (Ctrl+F)
+    { key = "f", mods = "CTRL", action = wezterm.action.Search("CurrentSelectionOrEmptyString") },
 
-    -- Đóng tab
+    -- Font size
+    { key = "+", mods = "CTRL", action = wezterm.action.IncreaseFontSize },
+    { key = "=", mods = "CTRL", action = wezterm.action.IncreaseFontSize },
+    { key = "-", mods = "CTRL", action = wezterm.action.DecreaseFontSize },
+    { key = "0", mods = "CTRL", action = wezterm.action.ResetFontSize },
+
+    -- Scroll
+    { key = "PageUp",   mods = "NONE", action = wezterm.action.ScrollByPage(-1) },
+    { key = "PageDown", mods = "NONE", action = wezterm.action.ScrollByPage(1) },
+
+    -- Tab mới / đóng tab
+    { key = "t", mods = "CTRL|SHIFT", action = wezterm.action.SpawnTab("CurrentPaneDomain") },
     { key = "w", mods = "CTRL|SHIFT", action = wezterm.action.CloseCurrentTab({ confirm = false }) },
 
     -- Chuyển tab
-    { key = "Tab",       mods = "CTRL",       action = wezterm.action.ActivateTabRelative(1) },
-    { key = "Tab",       mods = "CTRL|SHIFT", action = wezterm.action.ActivateTabRelative(-1) },
+    { key = "Tab", mods = "CTRL",       action = wezterm.action.ActivateTabRelative(1) },
+    { key = "Tab", mods = "CTRL|SHIFT", action = wezterm.action.ActivateTabRelative(-1) },
 
-    -- Split pane ngang / dọc
+    -- Split pane
     { key = "\\", mods = "CTRL|SHIFT", action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
     { key = "-",  mods = "CTRL|SHIFT", action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) },
 
