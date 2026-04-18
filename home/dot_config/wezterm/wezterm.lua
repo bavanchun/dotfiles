@@ -92,6 +92,16 @@ config.animation_fps = 60
 config.cursor_blink_ease_in = "EaseIn"
 config.cursor_blink_ease_out = "EaseOut"
 
+-- Cursor trail effect (PR #7420 custom build)
+config.cursor_trail = {
+    enabled = true,
+    duration = 100,
+    spread = 4.0,
+    opacity = 0.8,
+    dwell_threshold = 50,
+    distance_threshold = 2,
+}
+
 -- ── Shell ─────────────────────────────────────────────────────
 config.default_prog = { "zsh" }
 
