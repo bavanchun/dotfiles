@@ -88,6 +88,9 @@ config.enable_tab_bar = false
 -- ── Cursor ────────────────────────────────────────────────────
 config.default_cursor_style = "BlinkingBar"
 config.cursor_blink_rate = 500
+config.animation_fps = 60
+config.cursor_blink_ease_in = "EaseIn"
+config.cursor_blink_ease_out = "EaseOut"
 
 -- ── Shell ─────────────────────────────────────────────────────
 config.default_prog = { "zsh" }
