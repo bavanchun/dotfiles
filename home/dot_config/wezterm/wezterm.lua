@@ -83,11 +83,7 @@ config.initial_cols = 120
 config.initial_rows = 36
 
 -- ── Tab bar ───────────────────────────────────────────────────
-config.use_fancy_tab_bar = false
-config.tab_bar_at_bottom = false
-config.hide_tab_bar_if_only_one_tab = true
-config.show_new_tab_button_in_tab_bar = false
-config.tab_max_width = 30
+config.enable_tab_bar = false
 
 -- ── Cursor ────────────────────────────────────────────────────
 config.default_cursor_style = "BlinkingBar"
