@@ -176,6 +176,7 @@ config.animation_fps           = 60
 config.cursor_blink_ease_in    = "EaseIn"
 config.cursor_blink_ease_out   = "EaseOut"
 
+-- NOTE: cursor_trail requires a custom WezTerm build (PR #7420); silently ignored on stable
 config.cursor_trail = {
     enabled            = true,
     duration           = 100,
