@@ -81,6 +81,7 @@ config.enable_tab_bar               = true
 config.use_fancy_tab_bar            = false  -- retro mode for custom title colors
 config.tab_max_width                = 36
 config.hide_tab_bar_if_only_one_tab = true
+config.tab_bar_at_bottom            = true
 
 -- ── Tab / status palette ──────────────────────────────────────
 local TB = "#181825"  -- tab bar bg (mantle)
@@ -117,9 +118,12 @@ end
 
 -- ── Custom tab title ──────────────────────────────────────────
 wezterm.on("format-tab-title", function(tab, tabs, panes, cfg, hover, max_width)
-    local proc  = basename(tab.active_pane.foreground_process_name)
-    local icon  = ICONS[proc] or " "
+    local proc       = basename(tab.active_pane.foreground_process_name)
+    local icon       = ICONS[proc] or " "
+    local pane_title = tab.active_pane.title
+    -- priority: manually set title > pane title (set by app, e.g. "claude") > process name
     local title = (tab.tab_title ~= "" and tab.tab_title)
+                  or (pane_title ~= "" and pane_title)
                   or (proc ~= "" and proc)
                   or "shell"
     title = wezterm.truncate_right(icon .. " " .. title, max_width - 4)
