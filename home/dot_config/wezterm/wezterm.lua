@@ -11,7 +11,6 @@ config.font_size = 11.0
 -- ── Colors (Catppuccin Mocha) ─────────────────────────────────
 config.colors = {
     foreground    = "#cdd6f4",
-    background    = "#0f0f0f",
     cursor_bg     = "#f5e0dc",
     cursor_fg     = "#1e1e2e",
     cursor_border = "#f5e0dc",
