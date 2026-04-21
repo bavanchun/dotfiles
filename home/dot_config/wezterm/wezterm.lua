@@ -166,11 +166,6 @@ wezterm.on("update-right-status", function(window, pane)
         prev_bg = s.bg
     end
 
-    -- trailing close arrow back to tab bar bg
-    table.insert(items, { Background = { Color = TB } })
-    table.insert(items, { Foreground = { Color = SEG[#SEG].bg } })
-    table.insert(items, { Text = SEP_L })
-
     window:set_right_status(wezterm.format(items))
 end)
 
