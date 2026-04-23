@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# packages hash: {{ .packages | toJson | sha256sum }}
+set -euo pipefail
+
+{{ if eq .chezmoi.osRelease.id "ubuntu" -}}
+sudo apt update
+sudo apt install -y \
+  {{ range .packages.common }}{{ . }} {{ end }}\
+  {{ range .packages.apt }}{{ . }} {{ end }}
+
+# starship — not in Ubuntu apt, install via script
+if ! command -v starship >/dev/null 2>&1; then
+  curl -sS https://starship.rs/install.sh | sh -s -- -y
+fi
+
+# wezterm — install via flatpak or .deb
+if ! command -v wezterm >/dev/null 2>&1; then
+  flatpak install -y flathub org.wezfurlong.wezterm 2>/dev/null || \
+    echo "wezterm: install manually from https://wezfurlong.org/wezterm/install/linux.html"
+fi
+
+{{ else if eq .chezmoi.osRelease.id "arch" -}}
+sudo pacman -S --needed --noconfirm \
+  {{ range .packages.common }}{{ . }} {{ end }}\
+  {{ range .packages.pacman }}{{ . }} {{ end }}
+
+{{ else -}}
+echo "Warning: unsupported OS {{ .chezmoi.osRelease.id }}, skipping package install"
+{{ end -}}

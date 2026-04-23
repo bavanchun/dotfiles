@@ -86,4 +86,12 @@ zinit snippet OMZ::plugins/kubectl/kubectl.plugin.zsh
 alias codex1='CODEX_HOME=$HOME/.codex-account-1 codex'
 alias codex2='CODEX_HOME=$HOME/.codex-account-2 codex'
 
-code() { ~/.config/hypr/scripts/editor-picker.sh "$@"; }
+code() {
+  if [[ -x ~/.config/hypr/scripts/editor-picker.sh ]]; then
+    ~/.config/hypr/scripts/editor-picker.sh "$@"
+  elif command -v code >/dev/null 2>&1; then
+    command code "$@"
+  else
+    ${EDITOR:-nvim} "$@"
+  fi
+}

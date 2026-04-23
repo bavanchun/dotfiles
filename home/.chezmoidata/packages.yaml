@@ -1,0 +1,26 @@
+packages:
+  common:
+    - zsh
+    - git
+    - neovim
+    - tmux
+    - fzf
+    - ripgrep
+    - zoxide
+    - eza
+    - bat
+    - unzip
+    - curl
+  apt:
+    - alacritty
+    - kitty
+    - build-essential
+    - python3
+    - python3-pip
+  pacman:
+    - alacritty
+    - kitty
+    - wezterm
+    - starship
+    - python
+    - base-devel
