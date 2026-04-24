@@ -1,8 +1,12 @@
 local wezterm = require("wezterm")
 local config  = wezterm.config_builder()
+local is_linux = wezterm.target_triple:find("linux") ~= nil
+local copy_destination = is_linux and "ClipboardAndPrimarySelection" or "Clipboard"
 
--- Fix GPU rendering on Intel UHD (Wayland/Hyprland)
-config.front_end = "OpenGL"
+if is_linux then
+    -- Fix GPU rendering on Intel UHD (Wayland/Hyprland)
+    config.front_end = "OpenGL"
+end
 
 -- ── Font ──────────────────────────────────────────────────────
 config.font      = wezterm.font("JetBrainsMono Nerd Font")
@@ -197,7 +201,7 @@ config.mouse_bindings = {
     {
         event  = { Up = { streak = 1, button = "Left" } },
         mods   = "NONE",
-        action = wezterm.action.CompleteSelectionOrOpenLinkAtMouseCursor("ClipboardAndPrimarySelection"),
+        action = wezterm.action.CompleteSelectionOrOpenLinkAtMouseCursor(copy_destination),
     },
 }
 
@@ -205,7 +209,7 @@ config.mouse_bindings = {
 config.keys = {
     { key = "c", mods = "CTRL", action = wezterm.action_callback(function(window, pane)
         if window:get_selection_text_for_pane(pane) ~= "" then
-            window:perform_action(wezterm.action.CopyTo("ClipboardAndPrimarySelection"), pane)
+            window:perform_action(wezterm.action.CopyTo(copy_destination), pane)
         else
             window:perform_action(wezterm.action.SendKey { key = "c", mods = "CTRL" }, pane)
         end

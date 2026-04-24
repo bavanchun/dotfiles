@@ -1,7 +1,7 @@
 # dotconfig-term
 
 Cross-platform terminal/CLI dotfiles managed with [chezmoi](https://chezmoi.io).
-Works on both **Ubuntu** and **Arch Linux**.
+Works on **Ubuntu**, **Arch Linux**, and **macOS**. Windows is supported best through WSL for shell tools.
 
 ## What's included
 
@@ -25,7 +25,9 @@ sh -c "$(curl -fsLS get.chezmoi.io)"
 chezmoi init --apply bavanchun/dotconfig-term
 ```
 
-Packages are installed automatically via `run_onchange_before_install-packages.sh.tmpl` using `apt` (Ubuntu) or `pacman` (Arch).
+Packages are installed automatically via `run_onchange_before_install-packages.sh.tmpl` using `apt` (Ubuntu), `pacman` (Arch), or Homebrew (macOS). On macOS, install Homebrew before running `chezmoi init --apply`.
+
+On Windows, use this repo inside WSL if you want zsh/tmux/nvim behavior to match Linux/macOS. Native Windows terminal app configs may still be useful, but the shell bootstrap scripts intentionally skip unsupported OSes.
 
 ## Arch Linux users
 

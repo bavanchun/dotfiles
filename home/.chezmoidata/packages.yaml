@@ -24,3 +24,10 @@ packages:
     - starship
     - python
     - base-devel
+  brew:
+    - starship
+    - python
+  brew_cask:
+    - alacritty
+    - kitty
+    - wezterm

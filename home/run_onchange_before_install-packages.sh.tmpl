@@ -2,7 +2,8 @@
 # packages hash: {{ .packages | toJson | sha256sum }}
 set -euo pipefail
 
-{{ if eq .chezmoi.osRelease.id "ubuntu" -}}
+{{ if eq .chezmoi.os "linux" -}}
+{{   if eq .chezmoi.osRelease.id "ubuntu" -}}
 sudo apt update
 sudo apt install -y \
   {{ range .packages.common }}{{ . }} {{ end }}\
@@ -19,11 +20,28 @@ if ! command -v wezterm >/dev/null 2>&1; then
     echo "wezterm: install manually from https://wezfurlong.org/wezterm/install/linux.html"
 fi
 
-{{ else if eq .chezmoi.osRelease.id "arch" -}}
+{{   else if eq .chezmoi.osRelease.id "arch" -}}
 sudo pacman -S --needed --noconfirm \
   {{ range .packages.common }}{{ . }} {{ end }}\
   {{ range .packages.pacman }}{{ . }} {{ end }}
 
+{{   else -}}
+echo "Warning: unsupported Linux distribution {{ .chezmoi.osRelease.id }}, skipping package install"
+{{   end -}}
+{{ else if eq .chezmoi.os "darwin" -}}
+if ! command -v brew >/dev/null 2>&1; then
+  echo "Warning: Homebrew not found, skipping package install"
+  echo "Install Homebrew first: https://brew.sh"
+  exit 0
+fi
+
+brew install \
+  {{ range .packages.common }}{{ . }} {{ end }}\
+  {{ range .packages.brew }}{{ . }} {{ end }}
+
+brew install --cask \
+  {{ range .packages.brew_cask }}{{ . }} {{ end }}
+
 {{ else -}}
-echo "Warning: unsupported OS {{ .chezmoi.osRelease.id }}, skipping package install"
+echo "Warning: unsupported OS {{ .chezmoi.os }}, skipping package install"
 {{ end -}}
