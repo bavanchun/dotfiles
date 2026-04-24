@@ -25,9 +25,14 @@ packages:
     - python
     - base-devel
   brew:
+    - fd
+    - lazygit
+    - node
     - starship
     - python
+    - tree-sitter
   brew_cask:
     - alacritty
+    - font-jetbrains-mono-nerd-font
     - kitty
     - wezterm

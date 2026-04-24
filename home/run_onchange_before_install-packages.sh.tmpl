@@ -35,6 +35,12 @@ if ! command -v brew >/dev/null 2>&1; then
   exit 0
 fi
 
+if ! xcode-select -p >/dev/null 2>&1; then
+  echo "Warning: Xcode Command Line Tools not found"
+  echo "Run: xcode-select --install"
+  echo "Neovim native plugin builds such as telescope-fzf-native need make/clang."
+fi
+
 brew install \
   {{ range .packages.common }}{{ . }} {{ end }}\
   {{ range .packages.brew }}{{ . }} {{ end }}
