@@ -180,15 +180,7 @@ config.animation_fps           = 60
 config.cursor_blink_ease_in    = "EaseIn"
 config.cursor_blink_ease_out   = "EaseOut"
 
--- NOTE: cursor_trail requires a custom WezTerm build (PR #7420); silently ignored on stable
-config.cursor_trail = {
-    enabled            = true,
-    duration           = 100,
-    spread             = 4.0,
-    opacity            = 0.8,
-    dwell_threshold    = 50,
-    distance_threshold = 2,
-}
+-- cursor_trail requires custom WezTerm build (PR #7420), not available in stable
 
 -- ── Shell ─────────────────────────────────────────────────────
 config.default_prog = { "zsh" }
