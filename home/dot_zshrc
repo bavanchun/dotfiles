@@ -60,6 +60,9 @@ zinit snippet OMZ::plugins/tmux/tmux.plugin.zsh
 zinit light z-shell/zsh-eza
 zinit light djui/alias-tips
 
+# Initialize completion system (must run after all fpath additions, before fzf-tab)
+autoload -Uz compinit && compinit
+
 # fzf-tab: replace default completion with fzf (load after compinit, before other completion plugins)
 zinit light Aloxaf/fzf-tab
 
