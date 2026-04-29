@@ -16,9 +16,29 @@ return {
     "mfussenegger/nvim-jdtls",
     opts = function(_, opts)
       opts.cmd = opts.cmd or {}
-      -- Bump JVM heap: 512MB initial, 2GB max
       opts.jvm_args = { "-Xms512m", "-Xmx2048m" }
     end,
+  },
+
+  -- Override <leader>cr to bypass inc-rename (incompatible with jdtls)
+  {
+    "smjonas/inc-rename.nvim",
+    optional = true,
+    keys = {
+      {
+        "<leader>cr",
+        function()
+          local ft = vim.bo.filetype
+          if ft == "java" then
+            vim.lsp.buf.rename()
+          else
+            return ":IncRename " .. vim.fn.expand("<cword>")
+          end
+        end,
+        expr = true,
+        desc = "Rename",
+      },
+    },
   },
 
   -- DAP: Java debugger keybinds
