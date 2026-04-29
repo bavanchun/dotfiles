@@ -54,7 +54,7 @@ renamed = " ✍️ "
 deleted = " 🗑 "
 
 [hostname]
-ssh_only = false
+ssh_only = true
 format =  "[•$hostname](bg:252 bold fg:235)[](bold fg:252)"
 trim_at = ".companyname.com"
 disabled = false
@@ -78,7 +78,7 @@ style_user = "bold bg:252 fg:235"
 style_root = "red bold"
 format = "[](bold fg:252)[$user]($style)"
 disabled = false
-show_always = true
+show_always = false
 
 [directory]
 home_symbol = " "
