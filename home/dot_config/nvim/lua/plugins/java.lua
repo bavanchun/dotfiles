@@ -1,12 +1,52 @@
 return {
-  -- Install Java toolchain via Mason
+  -- Install toolchains via Mason
   {
     "mason-org/mason.nvim",
     opts = function(_, opts)
       vim.list_extend(opts.ensure_installed, {
+        -- Java
         "jdtls",
         "java-debug-adapter",
         "java-test",
+        -- Kubernetes & Helm
+        "helm-ls",
+        "yaml-language-server",
+        -- Formatters
+        "prettier",
+        "google-java-format",
+      })
+    end,
+  },
+
+  -- Auto-generate Java class template on new file
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    optional = true,
+    init = function()
+      vim.api.nvim_create_autocmd("BufNewFile", {
+        pattern = "*.java",
+        callback = function()
+          local filepath = vim.fn.expand("%:p")
+          local classname = vim.fn.expand("%:t:r")
+          -- Extract package from path (everything after /java/)
+          local pkg = filepath:match(".*/java/(.+)/[^/]+%.java$")
+          if pkg then
+            pkg = pkg:gsub("/", ".")
+          else
+            pkg = "com.example"
+          end
+          local lines = {
+            "package " .. pkg .. ";",
+            "",
+            "public class " .. classname .. " {",
+            "  ",
+            "}",
+          }
+          vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+          -- Place cursor inside class body
+          vim.api.nvim_win_set_cursor(0, { 4, 2 })
+          vim.cmd("startinsert")
+        end,
       })
     end,
   },
