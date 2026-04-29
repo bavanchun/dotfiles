@@ -72,6 +72,19 @@ keymap.set("n", "<leader>i", function()
   require("craftzdog.lsp").toggleInlayHints()
 end)
 
+-- Build command (like cmd+F9 in IntelliJ)
+keymap.set("n", "<leader>b", function()
+  require("overseer").run_template({ name = "build" }, function(task)
+    if task then
+      require("overseer").run(task)
+    end
+  end)
+end, { desc = "Build project" })
+
+vim.api.nvim_create_user_command("Build", function()
+  require("overseer").run_template({ name = "build" })
+end, {})
+
 vim.api.nvim_create_user_command("ToggleAutoformat", function()
   require("craftzdog.lsp").toggleAutoformat()
 end, {})
