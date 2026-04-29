@@ -68,6 +68,11 @@ autoload -Uz compinit && compinit
 # fzf-tab: replace default completion with fzf (load after compinit, before other completion plugins)
 zinit light Aloxaf/fzf-tab
 
+# fzf-tab: show alias/command expansion in preview pane
+zstyle ':fzf-tab:complete:-command-:*' fzf-preview \
+  'x=$(alias "$word" 2>/dev/null) && echo "alias: ${x#*=}" || which "$word" 2>/dev/null || echo "$word"'
+zstyle ':fzf-tab:*' fzf-flags '--height=50%' '--preview-window=right:40%:wrap'
+
 # History substring search: type partial command then ↑/↓ to search history
 zinit light zsh-users/zsh-history-substring-search
 bindkey '^[[A' history-substring-search-up
