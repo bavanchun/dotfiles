@@ -99,21 +99,26 @@ return {
     },
   },
 
-  -- Open go-to-definition in a new window (don't reuse current)
+  -- LSP keymaps: go-to-definition + rename
   {
     "neovim/nvim-lspconfig",
-    opts = function()
-      local keys = require("lazyvim.plugins.lsp.keymaps").get()
-      vim.list_extend(keys, {
-        {
-          "gd",
-          function()
-            require("telescope.builtin").lsp_definitions({ reuse_win = false })
-          end,
-          desc = "Goto Definition",
-          has = "definition",
-        },
-      })
-    end,
+    opts = {
+      servers = {},
+      setup = {},
+    },
+    keys = {
+      {
+        "gd",
+        function()
+          require("telescope.builtin").lsp_definitions({ reuse_win = false })
+        end,
+        desc = "Goto Definition",
+      },
+      {
+        "<leader>cr",
+        function() vim.lsp.buf.rename() end,
+        desc = "Rename (LSP)",
+      },
+    },
   },
 }
