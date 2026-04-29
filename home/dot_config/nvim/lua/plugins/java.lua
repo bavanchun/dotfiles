@@ -11,6 +11,16 @@ return {
     end,
   },
 
+  -- Increase jdtls heap to prevent OutOfMemoryError during indexing
+  {
+    "mfussenegger/nvim-jdtls",
+    opts = function(_, opts)
+      opts.cmd = opts.cmd or {}
+      -- Bump JVM heap: 512MB initial, 2GB max
+      opts.jvm_args = { "-Xms512m", "-Xmx2048m" }
+    end,
+  },
+
   -- DAP: Java debugger keybinds
   {
     "mfussenegger/nvim-dap",
