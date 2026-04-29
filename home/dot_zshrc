@@ -69,8 +69,9 @@ autoload -Uz compinit && compinit
 zinit light Aloxaf/fzf-tab
 
 # fzf-tab: show alias/command expansion in preview pane
+# Preview reads from cached alias file (subshell can't access runtime aliases)
 zstyle ':fzf-tab:complete:-command-:*' fzf-preview \
-  'x=$(alias "$word" 2>/dev/null) && echo "alias: ${x#*=}" || which "$word" 2>/dev/null || echo "$word"'
+  'grep -m1 "^$word=" ~/.cache/zsh-aliases.txt 2>/dev/null | sed "s/^[^=]*=//" || which "$word" 2>/dev/null || echo "$word"'
 zstyle ':fzf-tab:*' fzf-flags '--height=50%' '--preview-window=right:40%:wrap'
 
 # History substring search: type partial command then ↑/↓ to search history
@@ -97,6 +98,9 @@ zinit snippet OMZ::plugins/kubectl/kubectl.plugin.zsh
 # Java / Spring Boot
 zinit snippet OMZ::plugins/mvn/mvn.plugin.zsh
 zinit snippet OMZ::plugins/sdk/sdk.plugin.zsh
+
+# Cache all aliases to file so fzf-tab preview can read them in subshell
+alias > ~/.cache/zsh-aliases.txt 2>/dev/null
 
 ### End of Zinit's installer chunk
 
