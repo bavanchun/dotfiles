@@ -199,28 +199,6 @@ config.mouse_bindings = {
     },
 }
 
--- ── Smart pane navigation (Neovim-aware) ─────────────────────
--- Ctrl+H/J/K/L: pass to Neovim when nvim is foreground, else move WezTerm pane
-local nav_dirs = { h = "Left", j = "Down", k = "Up", l = "Right" }
-
-local function is_nvim(pane)
-    local proc = string.gsub(pane:get_foreground_process_name(), "(.*[/\\])(.*)", "%2")
-    return proc == "nvim" or proc == "vim"
-end
-
-local function pane_nav(key)
-    return {
-        key = key, mods = "CTRL",
-        action = wezterm.action_callback(function(win, pane)
-            if is_nvim(pane) then
-                win:perform_action(wezterm.action.SendKey { key = key, mods = "CTRL" }, pane)
-            else
-                win:perform_action(wezterm.action.ActivatePaneDirection(nav_dirs[key]), pane)
-            end
-        end),
-    }
-end
-
 -- ── Keybindings ───────────────────────────────────────────────
 config.keys = {
     { key = "c", mods = "CTRL", action = wezterm.action_callback(function(window, pane)
@@ -242,10 +220,6 @@ config.keys = {
     { key = "w", mods = "CTRL|SHIFT", action = wezterm.action.CloseCurrentTab({ confirm = false }) },
     { key = "Tab", mods = "CTRL",       action = wezterm.action.ActivateTabRelative(1) },
     { key = "Tab", mods = "CTRL|SHIFT", action = wezterm.action.ActivateTabRelative(-1) },
-    { key = "|", mods = "CTRL|SHIFT", action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
-    { key = "_", mods = "CTRL|SHIFT", action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) },
-    -- Smart pane navigation: Ctrl+H/J/K/L (pass-through to Neovim if active)
-    pane_nav("h"), pane_nav("j"), pane_nav("k"), pane_nav("l"),
 }
 
 return config
