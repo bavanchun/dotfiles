@@ -81,60 +81,8 @@ config.background = {
     },
 }
 
--- ── Tab bar ───────────────────────────────────────────────────
-config.enable_tab_bar               = true
-config.use_fancy_tab_bar            = true
-config.hide_tab_bar_if_only_one_tab = true
-config.tab_bar_at_bottom            = false
-
-config.window_frame = {
-    font      = wezterm.font("JetBrainsMono Nerd Font", { bold = true }),
-    font_size = 11.0,
-    active_titlebar_bg   = "#181825",
-    inactive_titlebar_bg = "#181825",
-}
-
--- ── Status palette (right status bar) ────────────────────────
-local TB = "#181825"
-
-local SEG = {
-    { bg = "#313244", fg = "#a6adc8" },
-    { bg = "#45475a", fg = "#bac2de" },
-    { bg = "#89b4fa", fg = "#1e1e2e" },
-}
-
-local SEP_R = wezterm.nerdfonts.pl_right_hard_divider
-
--- ── Right status bar ──────────────────────────────────────────
--- Layout (left → right): [workspace] [date] [time ▶]
-wezterm.on("update-right-status", function(window, pane)
-    local segments = {
-        "  " .. window:active_workspace(),
-        wezterm.strftime("  %a %d/%m"),
-        wezterm.strftime("  %H:%M"),
-    }
-
-    local items = {}
-    local prev_bg = TB
-
-    for i, text in ipairs(segments) do
-        local s = SEG[i]
-        -- leading powerline arrow: transition prev_bg → s.bg
-        table.insert(items, { Background = { Color = prev_bg } })
-        table.insert(items, { Foreground = { Color = s.bg } })
-        table.insert(items, { Text = SEP_R })
-        -- segment content
-        table.insert(items, { Background = { Color = s.bg } })
-        table.insert(items, { Foreground = { Color = s.fg } })
-        if i == #segments then
-            table.insert(items, { Attribute = { Intensity = "Bold" } })
-        end
-        table.insert(items, { Text = text .. " " })
-        prev_bg = s.bg
-    end
-
-    window:set_right_status(wezterm.format(items))
-end)
+-- ── Tab bar — disabled (tmux handles tabs/windows) ───────────
+config.enable_tab_bar = false
 
 -- ── Cursor ────────────────────────────────────────────────────
 config.default_cursor_style    = "BlinkingBar"
