@@ -53,7 +53,7 @@ config.colors = {
 -- ── Window ────────────────────────────────────────────────────
 config.window_padding    = { left = 22, right = 22, top = 22, bottom = 22 }
 -- macOS needs TITLE to show traffic lights and allow dragging the window
-config.window_decorations = is_macos and "RESIZE|TITLE" or "NONE"
+config.window_decorations = "RESIZE"
 config.initial_cols      = 120
 config.initial_rows      = 36
 
