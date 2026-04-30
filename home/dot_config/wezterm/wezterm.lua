@@ -41,7 +41,12 @@ config.colors = {
     },
 
     tab_bar = {
-        background = "#181825",  -- tab bar bg; tab rendering handled by format-tab-title
+        background        = "#181825",
+        active_tab        = { bg_color = "#89b4fa", fg_color = "#1e1e2e", intensity = "Bold" },
+        inactive_tab      = { bg_color = "#313244", fg_color = "#a6adc8" },
+        inactive_tab_hover = { bg_color = "#45475a", fg_color = "#cdd6f4" },
+        new_tab           = { bg_color = "#181825", fg_color = "#585b70" },
+        new_tab_hover     = { bg_color = "#313244", fg_color = "#cdd6f4" },
     },
 }
 
@@ -78,71 +83,27 @@ config.background = {
 
 -- ── Tab bar ───────────────────────────────────────────────────
 config.enable_tab_bar               = true
-config.use_fancy_tab_bar            = false  -- retro mode for custom title colors
-config.tab_max_width                = 36
+config.use_fancy_tab_bar            = true
 config.hide_tab_bar_if_only_one_tab = true
-config.tab_bar_at_bottom            = true
+config.tab_bar_at_bottom            = false
 
--- ── Tab / status palette ──────────────────────────────────────
-local TB = "#181825"  -- tab bar bg (mantle)
-
-local TAB = {
-    active = { bg = "#89b4fa", fg = "#1e1e2e" },
-    hover  = { bg = "#45475a", fg = "#cdd6f4" },
-    normal = { bg = "#313244", fg = "#a6adc8" },
+config.window_frame = {
+    font      = wezterm.font("JetBrainsMono Nerd Font", { bold = true }),
+    font_size = 11.0,
+    active_titlebar_bg   = "#181825",
+    inactive_titlebar_bg = "#181825",
 }
+
+-- ── Status palette (right status bar) ────────────────────────
+local TB = "#181825"
 
 local SEG = {
-    { bg = "#313244", fg = "#a6adc8" },  -- workspace
-    { bg = "#45475a", fg = "#bac2de" },  -- date
-    { bg = "#89b4fa", fg = "#1e1e2e" },  -- time (blue accent)
+    { bg = "#313244", fg = "#a6adc8" },
+    { bg = "#45475a", fg = "#bac2de" },
+    { bg = "#89b4fa", fg = "#1e1e2e" },
 }
 
-local SEP_R = wezterm.nerdfonts.pl_right_hard_divider  -- ▶
-local SEP_L = wezterm.nerdfonts.pl_left_hard_divider   -- ◀
-
-local ICONS = {
-    zsh = " ", bash = " ", fish = " ",
-    nvim = " ", vim = " ",
-    git = " ", lazygit = " ",
-    python3 = " ", python = " ",
-    node = " ", lua = " ",
-    btop = " ", htop = " ",
-    yazi = " ", ssh = " ",
-    cargo = " ", rustc = " ",
-}
-
-local function basename(s)
-    return string.gsub(s, "(.*[/\\])(.*)", "%2")
-end
-
--- ── Custom tab title ──────────────────────────────────────────
-wezterm.on("format-tab-title", function(tab, tabs, panes, cfg, hover, max_width)
-    local proc       = basename(tab.active_pane.foreground_process_name)
-    local icon       = ICONS[proc] or " "
-    local pane_title = tab.active_pane.title
-    -- priority: manually set title > pane title (set by app, e.g. "claude") > process name
-    local title = (tab.tab_title ~= "" and tab.tab_title)
-                  or (pane_title ~= "" and pane_title)
-                  or (proc ~= "" and proc)
-                  or "shell"
-    title = wezterm.truncate_right(icon .. " " .. title, max_width - 4)
-
-    local t = tab.is_active and TAB.active or (hover and TAB.hover or TAB.normal)
-
-    return {
-        { Background = { Color = TB } },
-        { Foreground = { Color = t.bg } },
-        { Text = SEP_R },
-        { Background = { Color = t.bg } },
-        { Foreground = { Color = t.fg } },
-        { Attribute = { Intensity = tab.is_active and "Bold" or "Normal" } },
-        { Text = " " .. title .. " " },
-        { Background = { Color = TB } },
-        { Foreground = { Color = t.bg } },
-        { Text = SEP_L },
-    }
-end)
+local SEP_R = wezterm.nerdfonts.pl_right_hard_divider
 
 -- ── Right status bar ──────────────────────────────────────────
 -- Layout (left → right): [workspace] [date] [time ▶]
