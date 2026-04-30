@@ -41,18 +41,14 @@ config.colors = {
     },
 
     tab_bar = {
-        background        = "#181825",
-        active_tab        = { bg_color = "#89b4fa", fg_color = "#1e1e2e", intensity = "Bold" },
-        inactive_tab      = { bg_color = "#313244", fg_color = "#a6adc8" },
-        inactive_tab_hover = { bg_color = "#45475a", fg_color = "#cdd6f4" },
-        new_tab           = { bg_color = "#181825", fg_color = "#585b70" },
-        new_tab_hover     = { bg_color = "#313244", fg_color = "#cdd6f4" },
+        background    = "#0f0f0f",
+        new_tab       = { bg_color = "#0f0f0f", fg_color = "#3a3a3a" },
+        new_tab_hover = { bg_color = "#222222", fg_color = "#808080" },
     },
 }
 
 -- ── Window ────────────────────────────────────────────────────
 config.window_padding    = { left = 22, right = 22, top = 22, bottom = 22 }
--- macOS needs TITLE to show traffic lights and allow dragging the window
 config.window_decorations = is_macos and "RESIZE|TITLE" or "NONE"
 config.initial_cols      = 120
 config.initial_rows      = 36
@@ -81,8 +77,50 @@ config.background = {
     },
 }
 
--- ── Tab bar — disabled (tmux handles tabs/windows) ───────────
-config.enable_tab_bar = false
+-- ── Tab bar ───────────────────────────────────────────────────
+config.enable_tab_bar               = true
+config.use_fancy_tab_bar            = false
+config.tab_bar_at_bottom            = false
+config.hide_tab_bar_if_only_one_tab = false
+config.tab_max_width                = 60
+
+-- title bar bg matches terminal background
+config.window_frame = {
+    font                 = wezterm.font("JetBrainsMono Nerd Font"),
+    font_size            = 10.0,
+    active_titlebar_bg   = "#0f0f0f",
+    inactive_titlebar_bg = "#0f0f0f",
+}
+
+local TAB_ACT  = { bg = "#242424", fg = "#d0d0d0" }
+local TAB_NORM = { bg = "#141414", fg = "#484848" }
+local HINT_FG  = "#333333"
+
+local function tab_title(tab)
+    if tab.tab_title and #tab.tab_title > 0 then return tab.tab_title end
+    if tab.active_pane.title and #tab.active_pane.title > 0 then return tab.active_pane.title end
+    return "~"
+end
+
+wezterm.on("format-tab-title", function(tab, tabs, panes, cfg, hover, max_width)
+    local title = tab_title(tab)
+    local hint  = "⌘" .. (tab.tab_index + 1)
+    local t     = tab.is_active and TAB_ACT or TAB_NORM
+
+    local gap = max_width - 2 - #title - #hint
+    if gap < 1 then
+        gap   = 1
+        title = wezterm.truncate_right(title, max_width - 2 - #hint - 1)
+    end
+
+    return {
+        { Background = { Color = t.bg } },
+        { Foreground = { Color = t.fg } },
+        { Text = " " .. title .. string.rep(" ", gap) },
+        { Foreground = { Color = HINT_FG } },
+        { Text = hint .. " " },
+    }
+end)
 
 -- ── Cursor ────────────────────────────────────────────────────
 config.default_cursor_style    = "BlinkingBar"
