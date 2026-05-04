@@ -2,23 +2,17 @@
 add_newline = false
 scan_timeout = 10
 command_timeout = 500
+palette = "my_theme"
 # Pipes ╰─ ╭─
 # Powerline symbols                                     
 # Wedges 🭧🭒 🭣🭧🭓
 # Random noise 🬖🬥🬔🬗
 # Cool stuff 󰜥   
 
-# format = """
-# $directory $fill $git_branch $cmd_duration
-#  $character"""
 format = """
 $cmd_duration $directory$git_branch
   $character"""
-right_format = "$git_status"
-
-[fill]
-symbol = '-'
-style = 'fg:245'
+right_format = "$jobs$status$git_status"
 
 # Replace the "❯" symbol in the prompt with "➜"
 [character]                            # The name of the module we are configuring is "character"
@@ -105,6 +99,28 @@ format = '[](bold fg:255)[󰉋 → $path]($style)[](bold fg:255)'
 [cmd_duration]
 min_time = 500
 format = '[](bold fg:252)[󰪢 $duration](bold bg:252 fg:235)[](bold fg:252)'
+
+[palette]
+# Named color palette — change one place to retheme everything
+[palettes.my_theme]
+light = "252"
+dark = "235"
+text = "255"
+
+[status]
+style = "bold red"
+format = "[$int ]($style)"
+disabled = false
+
+[jobs]
+symbol = " "
+number_threshold = 1
+disabled = false
+
+[git_metrics]
+added_style = "bold green"
+deleted_style = "bold red"
+disabled = false
 
 [php]
 disabled = true
