@@ -1,5 +1,7 @@
 # Don't print a new line at the start of the prompt
 add_newline = false
+scan_timeout = 10
+command_timeout = 500
 # Pipes ╰─ ╭─
 # Powerline symbols                                     
 # Wedges 🭧🭒 🭣🭧🭓
@@ -86,6 +88,7 @@ read_only = "  "
 style = "bg:255 fg:black"
 truncation_length = 2
 truncation_symbol = ".../"
+truncate_to_repo = true
 format = '[](bold fg:255)[󰉋 → $path]($style)[](bold fg:255)'
 
 
@@ -99,5 +102,65 @@ format = '[](bold fg:255)[󰉋 → $path]($style)[](bold fg:255)'
 "GitHub" = " 󰊤 "
 
 [cmd_duration]
-min_time = 0
+min_time = 500
 format = '[](bold fg:252)[󰪢 $duration](bold bg:252 fg:235)[](bold fg:252)'
+
+[php]
+disabled = true
+
+[nodejs]
+disabled = true
+
+[python]
+disabled = true
+
+[rust]
+disabled = true
+
+[golang]
+disabled = true
+
+[java]
+disabled = true
+
+[ruby]
+disabled = true
+
+[swift]
+disabled = true
+
+[kotlin]
+disabled = true
+
+[scala]
+disabled = true
+
+[elixir]
+disabled = true
+
+[elm]
+disabled = true
+
+[erlang]
+disabled = true
+
+[haskell]
+disabled = true
+
+[julia]
+disabled = true
+
+[nim]
+disabled = true
+
+[perl]
+disabled = true
+
+[terraform]
+disabled = true
+
+[vagrant]
+disabled = true
+
+[docker_context]
+disabled = true
