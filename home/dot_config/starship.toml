@@ -100,7 +100,6 @@ format = '[](bold fg:255)[󰉋 → $path]($style)[](bold fg:255)'
 min_time = 500
 format = '[](bold fg:252)[󰪢 $duration](bold bg:252 fg:235)[](bold fg:252)'
 
-[palette]
 # Named color palette — change one place to retheme everything
 [palettes.my_theme]
 light = "252"
