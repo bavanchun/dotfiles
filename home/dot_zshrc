@@ -107,6 +107,7 @@ alias > ~/.cache/zsh-aliases.txt 2>/dev/null
 # Run Codex with separate local state per account so two accounts can stay logged in at once.
 alias codex1='CODEX_HOME=$HOME/.codex-account-1 codex'
 alias codex2='CODEX_HOME=$HOME/.codex-account-2 codex'
+alias clauded='claude --dangerously-skip-permissions'
 
 # SDKMAN: Java version manager — must be at end of file
 export SDKMAN_DIR="$HOME/.sdkman"
