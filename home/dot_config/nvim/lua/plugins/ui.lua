@@ -1,4 +1,27 @@
 return {
+  -- Rose Pine moon colorscheme
+  {
+    "rose-pine/neovim",
+    name = "rose-pine",
+    opts = {
+      variant = "moon",
+      dark_variant = "moon",
+      dim_inactive_windows = false,
+      extend_background_behind_borders = true,
+      styles = {
+        bold = true,
+        italic = true,
+        transparency = false,
+      },
+    },
+  },
+
+  -- Override LazyVim default colorscheme
+  {
+    "LazyVim/LazyVim",
+    opts = { colorscheme = "rose-pine-moon" },
+  },
+
   {
     "sphamba/smear-cursor.nvim",
     event = "VeryLazy",
@@ -109,9 +132,9 @@ return {
       require("incline").setup({
         highlight = {
           groups = {
-            -- tokyonight-night palette
-            InclineNormal = { guibg = "#bb9af7", guifg = "#1a1b26" },
-            InclineNormalNC = { guifg = "#9d7cd8", guibg = "#16161e" },
+            -- rose-pine moon palette
+            InclineNormal = { guibg = "#c4a7e7", guifg = "#232136" },
+            InclineNormalNC = { guifg = "#817c9c", guibg = "#2a273f" },
           },
         },
         window = { margin = { vertical = 0, horizontal = 1 } },

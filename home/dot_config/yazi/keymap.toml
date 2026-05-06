@@ -1,5 +1,0 @@
-[mgr]
-prepend_keymap = [
-  { on = "<C-h>", run = "toggle_hidden", desc = "Toggle hidden files" },
-  { on = "g", run = "plugin smart-filter", desc = "Smart filter" },
-]

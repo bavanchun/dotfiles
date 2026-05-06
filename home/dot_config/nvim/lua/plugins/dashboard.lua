@@ -1,13 +1,13 @@
--- Target colors for VCHUN header gradient (tokyonight palette)
+-- Target colors for VCHUN header gradient (rose-pine moon palette)
 local header_colors = {
-  { 0x7a, 0xa2, 0xf7 }, -- line 1: blue
-  { 0x7d, 0xcf, 0xff }, -- line 2: cyan
-  { 0x73, 0xda, 0xca }, -- line 3: teal
-  { 0x9e, 0xce, 0x6a }, -- line 4: green
-  { 0xbb, 0x9a, 0xf7 }, -- line 5: purple
-  { 0xc0, 0xca, 0xf5 }, -- line 6: light
+  { 0x3e, 0x8f, 0xb0 }, -- line 1: pine (teal-blue)
+  { 0x9c, 0xcf, 0xd8 }, -- line 2: foam (cyan)
+  { 0xea, 0x9a, 0x97 }, -- line 3: rose (soft red)
+  { 0xf6, 0xc1, 0x77 }, -- line 4: gold (warm yellow)
+  { 0xc4, 0xa7, 0xe7 }, -- line 5: iris (purple)
+  { 0xe0, 0xde, 0xf4 }, -- line 6: text (light)
 }
-local horse_color = { 0xe0, 0xaf, 0x68 } -- tokyonight yellow/gold
+local horse_color = { 0xf6, 0xc1, 0x77 } -- rose-pine gold
 
 local function rgb(c)
   return string.format("#%02x%02x%02x", c[1], c[2], c[3])
@@ -18,11 +18,11 @@ local function set_hl()
     vim.api.nvim_set_hl(0, "VchunLine" .. i, { fg = rgb(c), bold = true })
   end
   vim.api.nvim_set_hl(0, "VchunHorse", { fg = rgb(horse_color) })
-  vim.api.nvim_set_hl(0, "VchunFooter", { fg = "#565f89", italic = true })
+  vim.api.nvim_set_hl(0, "VchunFooter", { fg = "#6e6a86", italic = true })
 end
 
 local function animate_header()
-  local bg = { 0x1a, 0x1b, 0x26 }
+  local bg = { 0x23, 0x21, 0x36 } -- rose-pine moon background
   -- Horse fades in first
   Snacks.animate(0, 100, function(value)
     local r = math.floor(bg[1] + (horse_color[1] - bg[1]) * value / 100)
