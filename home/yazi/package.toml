@@ -14,9 +14,8 @@ rev = "ac82af3"
 hash = "c887903a63a2ff520081b6d90a4b3392"
 
 [[flavor.deps]]
-use = "yazi-rs/flavors:tokyo-night"
-rev = "0670801"
-hash = "99aa06d3014798d86001c324468d497f"
+use = "BennyOe/tokyo-night.yazi"
+rev = "8e6296f"
 
 [[flavor.deps]]
 use = "yazi-rs/flavors:catppuccin-latte"
