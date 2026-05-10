@@ -21,14 +21,12 @@ packages:
     - alacritty
     - kitty
     - wezterm
-    - starship
     - python
     - base-devel
   brew:
     - fd
     - lazygit
     - node
-    - starship
     - python
     - tree-sitter
   brew_cask:

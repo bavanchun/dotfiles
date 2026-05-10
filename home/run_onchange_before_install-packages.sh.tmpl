@@ -9,11 +9,6 @@ sudo apt install -y \
   {{ range .packages.common }}{{ . }} {{ end }}\
   {{ range .packages.apt }}{{ . }} {{ end }}
 
-# starship — not in Ubuntu apt, install via script
-if ! command -v starship >/dev/null 2>&1; then
-  curl -sS https://starship.rs/install.sh | sh -s -- -y
-fi
-
 # wezterm — install via flatpak or .deb
 if ! command -v wezterm >/dev/null 2>&1; then
   flatpak install -y flathub org.wezfurlong.wezterm 2>/dev/null || \
