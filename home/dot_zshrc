@@ -30,6 +30,7 @@ if [[ -s "$NVM_DIR/nvm.sh" ]]; then
     corepack() { __nvm_use_default; command corepack "$@"; }
     codex() { __nvm_use_default; command codex "$@"; }
     gemini() { __nvm_use_default; command gemini "$@"; }
+    ck() { __nvm_use_default; command ck "$@"; }
 fi
 
 #export claude="/home/vchun/.local/bin/claude"
@@ -123,3 +124,5 @@ alias clauded='claude --dangerously-skip-permissions'
 # SDKMAN: Java version manager — must be at end of file
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+# Added by LM Studio CLI tool (lms)
