@@ -91,8 +91,8 @@ bindkey '^[[B' history-substring-search-down
 # forgit: interactive git commands powered by fzf (ga, glo, gd, gcb, ...)
 zinit light wfxr/forgit
 
-# zoxide: smarter cd with frecency (z <partial-path>)
-eval "$(zoxide init zsh)"
+# zoxide: smarter cd with frecency — replaces `cd` (real paths still work, `cdi` = interactive)
+eval "$(zoxide init zsh --cmd cd)"
 
 # Tiện ích hàng ngày
 zinit snippet OMZ::plugins/sudo/sudo.plugin.zsh
