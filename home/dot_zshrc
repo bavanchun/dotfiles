@@ -5,6 +5,11 @@ fi
 
 export NVM_DIR="$HOME/.config/nvm"
 export PATH="$HOME/.local/bin:/usr/local/bin:/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$PATH"
+
+# Flutter / Android / JDK toolchain
+export JAVA_HOME="/opt/homebrew/opt/openjdk@21"
+export ANDROID_HOME="/opt/homebrew/share/android-commandlinetools"
+export PATH="$JAVA_HOME/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
 if [[ -x /opt/homebrew/bin/brew ]]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
 elif [[ -x /usr/local/bin/brew ]]; then
