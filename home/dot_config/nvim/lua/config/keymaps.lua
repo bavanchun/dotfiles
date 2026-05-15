@@ -88,3 +88,12 @@ end, {})
 vim.api.nvim_create_user_command("ToggleAutoformat", function()
   require("craftzdog.lsp").toggleAutoformat()
 end, {})
+
+-- Flutter
+keymap.set("n", "<leader>Fr", "<cmd>FlutterRun<cr>", { desc = "Flutter Run" })
+keymap.set("n", "<leader>Fq", "<cmd>FlutterQuit<cr>", { desc = "Flutter Quit" })
+keymap.set("n", "<leader>FR", "<cmd>FlutterRestart<cr>", { desc = "Hot Restart" })
+keymap.set("n", "<leader>Fd", "<cmd>FlutterDevices<cr>", { desc = "Devices" })
+keymap.set("n", "<leader>Fe", "<cmd>FlutterEmulators<cr>", { desc = "Emulators" })
+keymap.set("n", "<leader>FD", "<cmd>FlutterDevTools<cr>", { desc = "DevTools" })
+keymap.set("n", "<leader>Fo", "<cmd>FlutterOutlineToggle<cr>", { desc = "Outline" })

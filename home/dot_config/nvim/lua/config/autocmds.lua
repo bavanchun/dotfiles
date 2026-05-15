@@ -20,3 +20,11 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt.conceallevel = 0
   end,
 })
+
+-- Hot reload Flutter on save
+vim.api.nvim_create_autocmd("BufWritePost", {
+  pattern = "*.dart",
+  callback = function()
+    require("flutter-tools.commands").reload(true)
+  end,
+})
