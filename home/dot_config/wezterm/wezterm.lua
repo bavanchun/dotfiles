@@ -13,23 +13,80 @@ end
 config.font      = wezterm.font("JetBrainsMono Nerd Font")
 config.font_size = 11.0
 
--- ── Colors (Catppuccin Mocha) ─────────────────────────────────
-config.colors = {
-    foreground    = "#cdd6f4",
-    cursor_bg     = "#f5e0dc",
-    cursor_fg     = "#1e1e2e",
-    cursor_border = "#f5e0dc",
-    selection_fg  = "#1e1e2e",
-    selection_bg  = "#89b4fa",
+-- ── Theme palettes (Catppuccin Mocha / Latte) ─────────────────
+local themes = {
+    dark = { -- Catppuccin Mocha
+        bg            = "#0f0f0f",
+        foreground    = "#cdd6f4",
+        cursor_bg     = "#f5e0dc",
+        cursor_fg     = "#1e1e2e",
+        cursor_border = "#f5e0dc",
+        selection_fg  = "#1e1e2e",
+        selection_bg  = "#89b4fa",
+        ansi = {
+            "#45475a", "#f38ba8", "#a6e3a1", "#f9e2af",
+            "#89b4fa", "#cba6f7", "#94e2d5", "#bac2de",
+        },
+        brights = {
+            "#585b70", "#f38ba8", "#a6e3a1", "#f9e2af",
+            "#89b4fa", "#cba6f7", "#94e2d5", "#a6adc8",
+        },
+        bg_opacity    = 0.92,
+        gradient      = { "#000000dd", "#00000000", "#000000dd" },
+        tab_bar_bg    = "#0f0f0f",
+        new_tab_fg    = "#3a3a3a",
+        new_tab_hover = { bg = "#222222", fg = "#808080" },
+        tab_act       = { bg = "#242424", fg = "#d0d0d0" },
+        tab_norm      = { bg = "#141414", fg = "#484848" },
+        hint_fg       = "#333333",
+    },
+    light = { -- Catppuccin Latte
+        bg            = "#eff1f5",
+        foreground    = "#4c4f69",
+        cursor_bg     = "#dc8a78",
+        cursor_fg     = "#eff1f5",
+        cursor_border = "#dc8a78",
+        selection_fg  = "#4c4f69",
+        selection_bg  = "#7287fd",
+        ansi = {
+            "#5c5f77", "#d20f39", "#40a02b", "#df8e1d",
+            "#1e66f5", "#8839ef", "#179299", "#acb0be",
+        },
+        brights = {
+            "#6c6f85", "#d20f39", "#40a02b", "#df8e1d",
+            "#1e66f5", "#8839ef", "#179299", "#bcc0cc",
+        },
+        bg_opacity    = 0.97,
+        gradient      = { "#ffffffcc", "#ffffff00", "#ffffffcc" },
+        tab_bar_bg    = "#e6e9ef",
+        new_tab_fg    = "#9ca0b0",
+        new_tab_hover = { bg = "#ccd0da", fg = "#5c5f77" },
+        tab_act       = { bg = "#ccd0da", fg = "#4c4f69" },
+        tab_norm      = { bg = "#e6e9ef", fg = "#9ca0b0" },
+        hint_fg       = "#bcc0cc",
+    },
+}
 
-    ansi = {
-        "#45475a", "#f38ba8", "#a6e3a1", "#f9e2af",
-        "#89b4fa", "#cba6f7", "#94e2d5", "#bac2de",
-    },
-    brights = {
-        "#585b70", "#f38ba8", "#a6e3a1", "#f9e2af",
-        "#89b4fa", "#cba6f7", "#94e2d5", "#a6adc8",
-    },
+-- macOS appearance -> theme (WezTerm reloads config when it changes)
+local function current_appearance()
+    if wezterm.gui then
+        return wezterm.gui.get_appearance():find("Dark") and "dark" or "light"
+    end
+    return "dark"
+end
+
+local theme = themes[current_appearance()]
+
+-- ── Colors ────────────────────────────────────────────────────
+config.colors = {
+    foreground    = theme.foreground,
+    cursor_bg     = theme.cursor_bg,
+    cursor_fg     = theme.cursor_fg,
+    cursor_border = theme.cursor_border,
+    selection_fg  = theme.selection_fg,
+    selection_bg  = theme.selection_bg,
+    ansi          = theme.ansi,
+    brights       = theme.brights,
 
     indexed = {
         [232] = "#080808", [233] = "#121212", [234] = "#1c1c1c",
@@ -41,9 +98,9 @@ config.colors = {
     },
 
     tab_bar = {
-        background    = "#0f0f0f",
-        new_tab       = { bg_color = "#0f0f0f", fg_color = "#3a3a3a" },
-        new_tab_hover = { bg_color = "#222222", fg_color = "#808080" },
+        background    = theme.tab_bar_bg,
+        new_tab       = { bg_color = theme.tab_bar_bg, fg_color = theme.new_tab_fg },
+        new_tab_hover = { bg_color = theme.new_tab_hover.bg, fg_color = theme.new_tab_hover.fg },
     },
 }
 
@@ -57,16 +114,16 @@ config.initial_rows      = 36
 -- Two-layer: base dark bg (semi-transparent) + top/bottom darkness
 config.background = {
     {
-        source  = { Color = "#0f0f0f" },
+        source  = { Color = theme.bg },
         width   = "100%",
         height  = "100%",
-        opacity = 0.92,
+        opacity = theme.bg_opacity,
     },
     {
         source = {
             Gradient = {
                 orientation   = { Linear = { angle = 90.0 } },
-                colors        = { "#000000dd", "#00000000", "#000000dd" },
+                colors        = theme.gradient,
                 interpolation = "Linear",
                 blend         = "Rgb",
             },
@@ -88,13 +145,13 @@ config.tab_max_width                = 60
 config.window_frame = {
     font                 = wezterm.font("JetBrainsMono Nerd Font"),
     font_size            = 10.0,
-    active_titlebar_bg   = "#0f0f0f",
-    inactive_titlebar_bg = "#0f0f0f",
+    active_titlebar_bg   = theme.tab_bar_bg,
+    inactive_titlebar_bg = theme.tab_bar_bg,
 }
 
-local TAB_ACT  = { bg = "#242424", fg = "#d0d0d0" }
-local TAB_NORM = { bg = "#141414", fg = "#484848" }
-local HINT_FG  = "#333333"
+local TAB_ACT  = theme.tab_act
+local TAB_NORM = theme.tab_norm
+local HINT_FG  = theme.hint_fg
 
 local function tab_title(tab)
     if tab.tab_title and #tab.tab_title > 0 then return tab.tab_title end
