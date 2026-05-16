@@ -68,7 +68,7 @@ local themes = {
 }
 
 -- Theme mode: "auto" follows macOS appearance; "light" / "dark" force one.
-local THEME_MODE = "light"
+local THEME_MODE = "auto"
 
 -- macOS appearance -> theme (WezTerm reloads config when it changes)
 local function current_appearance()
