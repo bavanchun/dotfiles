@@ -67,8 +67,14 @@ local themes = {
     },
 }
 
+-- Theme mode: "auto" follows macOS appearance; "light" / "dark" force one.
+local THEME_MODE = "light"
+
 -- macOS appearance -> theme (WezTerm reloads config when it changes)
 local function current_appearance()
+    if THEME_MODE == "light" or THEME_MODE == "dark" then
+        return THEME_MODE
+    end
     if wezterm.gui then
         return wezterm.gui.get_appearance():find("Dark") and "dark" or "light"
     end
