@@ -1,3 +1,7 @@
+# fastfetch on terminal open — must run BEFORE p10k instant prompt to avoid
+# "console output during zsh initialization" warning. Skip inside tmux.
+[[ $- == *i* && -z $TMUX ]] && command -v fastfetch >/dev/null && fastfetch
+
 # Powerlevel10k instant prompt — must be near top, before any output
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
@@ -143,6 +147,3 @@ export PATH="/Users/vchun/.local/bin:$PATH"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
-
-# fastfetch on terminal open — skip in tmux and nested shells
-[[ $- == *i* && -z $TMUX && $SHLVL -eq 1 ]] && command -v fastfetch >/dev/null && fastfetch --logo apple_small
