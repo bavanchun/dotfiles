@@ -131,3 +131,18 @@ export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 # Added by LM Studio CLI tool (lms)
+export PATH="/Applications/Antigravity.app/Contents/Resources/app/bin:$PATH"
+
+
+# Added by Antigravity CLI installer
+export PATH="/Users/vchun/.local/bin:$PATH"
+
+# bun completions
+[ -s "/Users/vchun/.bun/_bun" ] && source "/Users/vchun/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# fastfetch on terminal open — skip in tmux and nested shells
+[[ $- == *i* && -z $TMUX && $SHLVL -eq 1 ]] && command -v fastfetch >/dev/null && fastfetch --logo apple_small
