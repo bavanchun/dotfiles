@@ -1,3 +1,13 @@
+# Brew shellenv first so /opt/homebrew/bin is on PATH for non-login shells
+# (e.g. wezterm), which don't get path_helper via /etc/zprofile.
+if [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -x /usr/local/bin/brew ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
 # fastfetch on terminal open — must run BEFORE p10k instant prompt to avoid
 # "console output during zsh initialization" warning. Skip inside tmux.
 [[ $- == *i* && -z $TMUX ]] && command -v fastfetch >/dev/null && fastfetch
@@ -14,13 +24,6 @@ export PATH="$HOME/.local/bin:/usr/local/bin:/Applications/Visual Studio Code.ap
 export JAVA_HOME="/opt/homebrew/opt/openjdk@21"
 export ANDROID_HOME="/opt/homebrew/share/android-commandlinetools"
 export PATH="$JAVA_HOME/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
-if [[ -x /opt/homebrew/bin/brew ]]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-elif [[ -x /usr/local/bin/brew ]]; then
-    eval "$(/usr/local/bin/brew shellenv)"
-elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-fi
 
 export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
 
