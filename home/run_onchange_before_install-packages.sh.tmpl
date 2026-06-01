@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
-# packages hash: {{ .packages | toJson | sha256sum }}
+# packages hash: {{ .packages | toJson | sha256sum }} terminal={{ if hasKey . "terminal" }}{{ .terminal }}{{ else }}wezterm{{ end }}
 set -euo pipefail
+{{ $terminal := "wezterm" -}}
+{{ if hasKey . "terminal" -}}
+{{   $terminal = .terminal -}}
+{{ end -}}
 
 {{ if eq .chezmoi.os "linux" -}}
 {{   if eq .chezmoi.osRelease.id "ubuntu" -}}
@@ -42,6 +46,16 @@ brew install \
 
 brew install --cask \
   {{ range .packages.brew_cask }}{{ . }} {{ end }}
+
+{{   if eq $terminal "wezterm" -}}
+brew install --cask wezterm
+{{   else if eq $terminal "kitty" -}}
+brew install --cask kitty
+{{   else if eq $terminal "alacritty" -}}
+brew install --cask alacritty
+{{   else -}}
+echo "Skipping terminal app install"
+{{   end -}}
 
 {{ else -}}
 echo "Warning: unsupported OS {{ .chezmoi.os }}, skipping package install"

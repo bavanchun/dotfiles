@@ -26,6 +26,7 @@ chezmoi init --apply bavanchun/dotconfig-term
 ```
 
 Packages are installed automatically via `run_onchange_before_install-packages.sh.tmpl` using `apt` (Ubuntu), `pacman` (Arch), or Homebrew (macOS). On macOS, install Homebrew before running `chezmoi init --apply`.
+During init, choose the macOS terminal app to install (`wezterm`, `kitty`, `alacritty`, or `none`). The choice is stored per machine in chezmoi config and reused on later applies.
 
 On Windows, use this repo inside WSL if you want zsh/tmux/nvim behavior to match Linux/macOS. Native Windows terminal app configs may still be useful, but the shell bootstrap scripts intentionally skip unsupported OSes.
 

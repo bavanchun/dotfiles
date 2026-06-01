@@ -30,7 +30,4 @@ packages:
     - python
     - tree-sitter
   brew_cask:
-    - alacritty
     - font-jetbrains-mono-nerd-font
-    - kitty
-    - wezterm

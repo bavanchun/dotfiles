@@ -1,5 +1,6 @@
 [data]
   machine = {{ .chezmoi.hostname | quote }}
+  terminal = {{ promptChoice "terminal" (list "wezterm" "kitty" "alacritty" "none") "wezterm" | quote }}
 
 [git]
   autoCommit = false
