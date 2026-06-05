@@ -192,7 +192,20 @@ config.animation_fps           = 60
 config.cursor_blink_ease_in    = "EaseIn"
 config.cursor_blink_ease_out   = "EaseOut"
 
--- cursor_trail requires custom WezTerm build (PR #7420), not available in stable
+-- cursor_trail: custom build from flowchartsman:cursor_trail (PR #7420), kitty-style smear.
+-- version-guarded so stock/brew builds (e.g. 20240203) don't error on the unknown key.
+-- threshold sits above stock and below the custom build's datestamp (20251208).
+local ver = tonumber((wezterm.version or "0"):sub(1, 8)) or 0
+if ver >= 20250101 then
+  config.cursor_trail = {
+    enabled            = true,
+    dwell_threshold    = 80,   -- ms cursor still before trail draws
+    distance_threshold = 5,    -- cells jumped before trail
+    duration           = 300,  -- ms leading edge -> cursor
+    spread             = 2,    -- trailing-edge smear multiplier
+    opacity            = 0.6,
+  }
+end
 
 -- ── Shell ─────────────────────────────────────────────────────
 config.default_prog = { "zsh" }
