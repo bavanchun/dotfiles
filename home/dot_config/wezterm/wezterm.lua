@@ -50,13 +50,13 @@ local themes = {
         },
     },
     light = { -- Catppuccin Latte (crisp, high-contrast light)
-        bg            = "#dfe2e8",
+        bg            = "#e8e3d8",
         foreground    = "#1c1e2a",
-        cursor_bg     = "#dc8a78",
-        cursor_fg     = "#eff1f5",
-        cursor_border = "#dc8a78",
-        selection_fg  = "#4c4f69",
-        selection_bg  = "#bcc0cc",
+        cursor_bg     = "#c4621a",
+        cursor_fg     = "#e8e3d8",
+        cursor_border = "#c4621a",
+        selection_fg  = "#1c1e2a",
+        selection_bg  = "#d6cdba",
         ansi = {
             "#5c5f77", "#d20f39", "#40a02b", "#df8e1d",
             "#1e66f5", "#8839ef", "#179299", "#acb0be",
@@ -67,12 +67,12 @@ local themes = {
         },
         bg_opacity    = 1.0,
         gradient      = { "#00000010", "#00000000", "#00000010" },
-        tab_bar_bg    = "#e6e9ef",
-        new_tab_fg    = "#8c8fa1",
-        new_tab_hover = { bg = "#ccd0da", fg = "#4c4f69" },
-        tab_act       = { bg = "#ccd0da", fg = "#4c4f69" },
-        tab_norm      = { bg = "#e6e9ef", fg = "#8c8fa1" },
-        hint_fg       = "#9ca0b0",
+        tab_bar_bg    = "#ddd7c9",
+        new_tab_fg    = "#9b9482",
+        new_tab_hover = { bg = "#cfc8b6", fg = "#1c1e2a" },
+        tab_act       = { bg = "#cfc8b6", fg = "#1c1e2a" },
+        tab_norm      = { bg = "#ddd7c9", fg = "#9b9482" },
+        hint_fg       = "#a8a18d",
         -- 256-color grayscale ramp inverted: light->dark so dim text stays
         -- visible on the white background (apps emit high indices for "dim").
         indexed = {
