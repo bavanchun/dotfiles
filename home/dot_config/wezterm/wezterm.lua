@@ -39,6 +39,15 @@ local themes = {
         tab_act       = { bg = "#242424", fg = "#d0d0d0" },
         tab_norm      = { bg = "#141414", fg = "#484848" },
         hint_fg       = "#333333",
+        -- 256-color grayscale ramp: dark->light (for dark backgrounds)
+        indexed = {
+            [232] = "#080808", [233] = "#121212", [234] = "#1c1c1c",
+            [235] = "#262626", [236] = "#303030", [237] = "#3a3a3a",
+            [238] = "#444444", [239] = "#4e4e4e", [244] = "#808080",
+            [245] = "#8a8a8a", [248] = "#a8a8a8", [249] = "#b2b2b2",
+            [250] = "#bcbcbc", [251] = "#c6c6c6", [252] = "#d0d0d0",
+            [253] = "#dadada", [254] = "#e4e4e4", [255] = "#eeeeee",
+        },
     },
     light = { -- Catppuccin Latte (crisp, high-contrast light)
         bg            = "#eff1f5",
@@ -64,6 +73,16 @@ local themes = {
         tab_act       = { bg = "#ccd0da", fg = "#4c4f69" },
         tab_norm      = { bg = "#e6e9ef", fg = "#8c8fa1" },
         hint_fg       = "#9ca0b0",
+        -- 256-color grayscale ramp inverted: light->dark so dim text stays
+        -- visible on the white background (apps emit high indices for "dim").
+        indexed = {
+            [232] = "#eeeeee", [233] = "#e4e4e4", [234] = "#dadada",
+            [235] = "#d0d0d0", [236] = "#c6c6c6", [237] = "#bcbcbc",
+            [238] = "#b2b2b2", [239] = "#a8a8a8", [244] = "#8a8a8a",
+            [245] = "#808080", [248] = "#4e4e4e", [249] = "#444444",
+            [250] = "#3a3a3a", [251] = "#303030", [252] = "#262626",
+            [253] = "#1c1c1c", [254] = "#121212", [255] = "#080808",
+        },
     },
 }
 
@@ -94,14 +113,7 @@ config.colors = {
     ansi          = theme.ansi,
     brights       = theme.brights,
 
-    indexed = {
-        [232] = "#080808", [233] = "#121212", [234] = "#1c1c1c",
-        [235] = "#262626", [236] = "#303030", [237] = "#3a3a3a",
-        [238] = "#444444", [239] = "#4e4e4e", [244] = "#808080",
-        [245] = "#8a8a8a", [248] = "#a8a8a8", [249] = "#b2b2b2",
-        [250] = "#bcbcbc", [251] = "#c6c6c6", [252] = "#d0d0d0",
-        [253] = "#dadada", [254] = "#e4e4e4", [255] = "#eeeeee",
-    },
+    indexed = theme.indexed,
 
     tab_bar = {
         background    = theme.tab_bar_bg,
