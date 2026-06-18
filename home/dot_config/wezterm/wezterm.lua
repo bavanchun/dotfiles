@@ -50,7 +50,7 @@ local themes = {
         },
     },
     light = { -- Catppuccin Latte (crisp, high-contrast light)
-        bg            = "#eff1f5",
+        bg            = "#dfe2e8",
         foreground    = "#1c1e2a",
         cursor_bg     = "#dc8a78",
         cursor_fg     = "#eff1f5",
