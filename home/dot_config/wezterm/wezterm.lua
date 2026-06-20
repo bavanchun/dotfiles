@@ -281,11 +281,12 @@ config.keys = {
     { key = "_", mods = "CTRL|SHIFT", action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) },
     pane_nav("h"), pane_nav("j"), pane_nav("k"), pane_nav("l"),
 
-    -- Cmd+M: QuickSelect any .md filename on screen → glow in a right split pane.
+    -- Cmd+Shift+M: QuickSelect any .md filename on screen → glow in a right split pane.
     -- Matches relative names (CLAUDE.md) and paths (./docs/foo.md, ~/bar.md, /abs/path.md).
     -- Requires OSC 7 in zshrc so WezTerm knows the pane's CWD for relative paths.
-    -- Press 'q' or any key to close the preview pane when done.
-    { key = "m", mods = "CMD",
+    -- Press any key to close the preview pane when done.
+    -- Note: Cmd+M is reserved by macOS (minimize window), so Cmd+Shift+M is used.
+    { key = "m", mods = "CMD|SHIFT",
       action = wezterm.action.QuickSelectArgs {
           patterns = { [[\b[\w./~-]+\.md\b]] },
           action = wezterm.action_callback(function(window, pane)
