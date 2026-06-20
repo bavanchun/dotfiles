@@ -280,6 +280,30 @@ config.keys = {
     { key = "|", mods = "CTRL|SHIFT", action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
     { key = "_", mods = "CTRL|SHIFT", action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) },
     pane_nav("h"), pane_nav("j"), pane_nav("k"), pane_nav("l"),
+
+    -- Cmd+M: QuickSelect any .md filename on screen → macOS Quick Look preview.
+    -- Matches relative names (CLAUDE.md) and paths (./docs/foo.md, ~/bar.md, /abs/path.md).
+    -- Requires OSC 7 in zshrc so WezTerm knows the pane's CWD for relative paths.
+    { key = "m", mods = "CMD",
+      action = wezterm.action.QuickSelectArgs {
+          patterns = { [[\b[\w./~-]+\.md\b]] },
+          action = wezterm.action_callback(function(window, pane)
+              local sel = window:get_selection_text_for_pane(pane)
+              if not sel or sel == "" then return end
+              local home = os.getenv("HOME") or ""
+              -- expand leading ~ to $HOME
+              local path = sel:gsub("^~", home)
+              -- resolve relative paths using pane CWD (from OSC 7)
+              if not path:match("^/") then
+                  local cwd_uri = pane:get_current_working_dir()
+                  if cwd_uri then
+                      path = cwd_uri.file_path .. "/" .. path
+                  end
+              end
+              wezterm.run_child_process({ "qlmanage", "-p", path })
+          end),
+      },
+    },
 }
 
 return config
