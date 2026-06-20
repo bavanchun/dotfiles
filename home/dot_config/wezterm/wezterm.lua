@@ -301,14 +301,11 @@ config.keys = {
                       path = cwd_uri.file_path .. "/" .. path
                   end
               end
-              -- open glow in a right split; press q to close
+              -- open glow in a right split; press any key to close
               window:perform_action(
-                  wezterm.action.SplitPane {
-                      direction = "Right",
-                      size = { Percent = 50 },
-                      command = {
-                          args = { "sh", "-c", "glow --width 0 '" .. path .. "'; read -rsk1" },
-                      },
+                  wezterm.action.SplitHorizontal {
+                      domain = "CurrentPaneDomain",
+                      args = { "zsh", "-c", "glow -w 0 '" .. path .. "'; read -k1" },
                   },
                   pane
               )
