@@ -7,5 +7,11 @@ config:
   MD033: false   # no-inline-html: cho phép HTML inline
   MD041: false   # first-line-heading: không bắt buộc H1 ở dòng đầu
   MD060: false   # table-column-style: cho phép bảng pipe compact (|a|b|)
+  MD022: false   # blanks-around-headings: note thường/Obsidian không cần
+  MD032: false   # blanks-around-lists: tương tự
+  MD031: false   # blanks-around-fences: quanh code block
+  MD012: false   # no-multiple-blanks: cho phép nhiều dòng trống
+  MD040: false   # fenced-code-language: không bắt buộc khai báo ngôn ngữ
+  MD026: false   # trailing-punctuation trong heading (vd "Tại sao?")
   MD024:
     siblings_only: true   # duplicate-heading: chỉ chặn khi trùng cùng cấp
