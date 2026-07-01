@@ -13,9 +13,11 @@ vim.api.nvim_create_autocmd("InsertLeave", {
   command = "set nopaste",
 })
 
--- Disable concealing in some file formats (LazyVim default is 3)
+-- Disable concealing in some file formats (LazyVim default is 3).
+-- Markdown cố ý KHÔNG nằm đây: render-markdown.nvim cần conceallevel > 0 để
+-- ẩn cú pháp (#, *, backtick) cho đẹp; nó tự hiện raw ở dòng con trỏ khi sửa.
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "json", "jsonc", "markdown" },
+  pattern = { "json", "jsonc" },
   callback = function()
     vim.opt.conceallevel = 0
   end,

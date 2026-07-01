@@ -185,10 +185,4 @@ return {
     },
     keys = { { "<leader>z", "<cmd>ZenMode<cr>", desc = "Zen Mode" } },
   },
-
-  -- Disable render-markdown (can conflict with conceallevel=0)
-  {
-    "MeanderingProgrammer/render-markdown.nvim",
-    enabled = false,
-  },
 }
