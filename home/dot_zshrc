@@ -8,10 +8,6 @@ elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
-# fastfetch on terminal open — must run BEFORE p10k instant prompt to avoid
-# "console output during zsh initialization" warning. Skip inside tmux.
-[[ $- == *i* && -z $TMUX ]] && command -v fastfetch >/dev/null && fastfetch
-
 # Powerlevel10k instant prompt — must be near top, before any output
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
