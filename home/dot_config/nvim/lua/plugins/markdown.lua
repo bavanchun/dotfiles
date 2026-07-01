@@ -52,4 +52,21 @@ return {
       },
     },
   },
+
+  -- Tắt diagnostics của marksman (LSP) nhưng GIỮ goto/hover/rename.
+  -- Marksman báo wikilink [[...]] "ambiguous" gây nhiễu trong vault Obsidian
+  -- (nơi [[...]] dùng khắp nơi). Cho handler publishDiagnostics thành no-op
+  -- => marksman không đẩy diagnostic nào, các tính năng khác vẫn chạy.
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        marksman = {
+          handlers = {
+            ["textDocument/publishDiagnostics"] = function() end,
+          },
+        },
+      },
+    },
+  },
 }
