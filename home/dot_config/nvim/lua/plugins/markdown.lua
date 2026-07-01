@@ -32,4 +32,20 @@ return {
       },
     },
   },
+
+  -- Ép markdownlint-cli2 dùng config global ~/.markdownlint-cli2.yaml.
+  -- nvim-lint pipe buffer qua stdin (args mặc định {"-"}) nên cli2 không có
+  -- đường dẫn file để tự dò config, lại dừng ở git-root -> phải truyền --config
+  -- tường minh, nếu không MD013/MD060... vẫn spam virtual-text vàng.
+  {
+    "mfussenegger/nvim-lint",
+    optional = true,
+    opts = {
+      linters = {
+        ["markdownlint-cli2"] = {
+          args = { "--config", vim.fn.expand("~/.markdownlint-cli2.yaml"), "-" },
+        },
+      },
+    },
+  },
 }
