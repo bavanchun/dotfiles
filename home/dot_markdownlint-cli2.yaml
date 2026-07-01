@@ -1,0 +1,10 @@
+# Global markdownlint-cli2 config — dịu bớt rule "phong cách" gây nhiễu trong nvim.
+# markdownlint-cli2 dò config ngược từ thư mục file lên tới $HOME, nên file này áp
+# cho mọi file markdown nằm dưới ~/. Vẫn giữ các rule bắt lỗi cú pháp thật sự;
+# chỉ tắt mấy rule format khó tính hay spam virtual-text đầy màn hình.
+config:
+  MD013: false   # line-length: bỏ giới hạn 80 ký tự (thủ phạm spam chính)
+  MD033: false   # no-inline-html: cho phép HTML inline
+  MD041: false   # first-line-heading: không bắt buộc H1 ở dòng đầu
+  MD024:
+    siblings_only: true   # duplicate-heading: chỉ chặn khi trùng cùng cấp
