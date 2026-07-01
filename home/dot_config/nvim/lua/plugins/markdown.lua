@@ -38,15 +38,18 @@ return {
   },
 
   -- Ép markdownlint-cli2 dùng config global ~/.markdownlint-cli2.yaml.
-  -- nvim-lint pipe buffer qua stdin (args mặc định {"-"}) nên cli2 không có
-  -- đường dẫn file để tự dò config, lại dừng ở git-root -> phải truyền --config
-  -- tường minh, nếu không MD013/MD060... vẫn spam virtual-text vàng.
+  -- Điểm mấu chốt: cli2 đọc buffer qua stdin nhưng VẪN dò config theo cwd của
+  -- tiến trình rồi merge/đè lên --config. nvim mở trong vault Obsidian (cwd =
+  -- thư mục vault có .markdownlint.yaml line_length=120) -> config vault thắng,
+  -- MD013/MD022/MD032 bật lại. Ép cwd = $HOME (chỉ thấy config global của user)
+  -- để mọi file markdown lint theo đúng 1 config, sạch bất kể mở từ thư mục nào.
   {
     "mfussenegger/nvim-lint",
     optional = true,
     opts = {
       linters = {
         ["markdownlint-cli2"] = {
+          cwd = vim.fn.expand("~"),
           args = { "--config", vim.fn.expand("~/.markdownlint-cli2.yaml"), "-" },
         },
       },
