@@ -10,9 +10,13 @@ return {
     "MeanderingProgrammer/render-markdown.nvim",
     ft = { "markdown", "markdown.mdx" },
     opts = {
-      -- Icon heading H1..H6 (đậm dần), thay cho dấu # thô.
+      -- Heading: icon H1..H6 + thanh bar trên/dưới (border) để tách section
+      -- rõ ràng như Obsidian. KHÔNG hardcode màu -> để render-markdown lấy màu
+      -- theo colorscheme nên tự đổi đúng khi toggle light/dark theme.
       heading = {
         icons = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
+        border = true,
+        width = "full",
       },
       -- Code block: nền kín cả khối, viền dày, chừa lề trái/phải cho dễ đọc.
       code = {
