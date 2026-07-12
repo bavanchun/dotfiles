@@ -133,6 +133,8 @@ alias clauded='claude --dangerously-skip-permissions'
 
 # z.ai GLM Coding Plan: chạy Claude Code qua endpoint z.ai (gõ `glm` thay vì `claude`)
 # ANTHROPIC_MODEL đè "model" trong ~/.claude/settings.json để không gửi tên model Claude sang z.ai
+# --effort high: GLM-5.2 chỉ có 2 mức thinking (High/Max); low/medium/high -> High, xhigh/max -> Max.
+#   Pin "high" để GLM luôn chạy thinking High. Muốn Max thì gõ: glm --effort max
 glm() {
     if [[ -z "$ZAI_API_KEY" ]]; then
         echo "glm: ZAI_API_KEY chưa được set — kiểm tra ~/.zsh-secrets" >&2
@@ -145,7 +147,7 @@ glm() {
     ANTHROPIC_DEFAULT_SONNET_MODEL="glm-5.2[1m]" \
     ANTHROPIC_DEFAULT_HAIKU_MODEL="glm-4.7" \
     API_TIMEOUT_MS=3000000 \
-    claude "$@"
+    claude --effort high "$@"
 }
 # Lean Opus 4.8: 200K context, adaptive thinking off, no flicker
 alias claude-lean='CLAUDE_CODE_DISABLE_1M_CONTEXT=1 CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1 CLAUDE_CODE_NO_FLICKER=1 claude --dangerously-skip-permissions'
