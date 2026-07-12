@@ -127,6 +127,26 @@ alias > ~/.cache/zsh-aliases.txt 2>/dev/null
 alias codex1='CODEX_HOME=$HOME/.codex-account-1 codex'
 alias codex2='CODEX_HOME=$HOME/.codex-account-2 codex'
 alias clauded='claude --dangerously-skip-permissions'
+
+# Local secrets (API keys, tokens) — file nằm ngoài chezmoi, không commit
+[[ -f "$HOME/.zsh-secrets" ]] && source "$HOME/.zsh-secrets"
+
+# z.ai GLM Coding Plan: chạy Claude Code qua endpoint z.ai (gõ `glm` thay vì `claude`)
+# ANTHROPIC_MODEL đè "model" trong ~/.claude/settings.json để không gửi tên model Claude sang z.ai
+glm() {
+    if [[ -z "$ZAI_API_KEY" ]]; then
+        echo "glm: ZAI_API_KEY chưa được set — kiểm tra ~/.zsh-secrets" >&2
+        return 1
+    fi
+    ANTHROPIC_BASE_URL="https://api.z.ai/api/anthropic" \
+    ANTHROPIC_AUTH_TOKEN="$ZAI_API_KEY" \
+    ANTHROPIC_MODEL="glm-5.2[1m]" \
+    ANTHROPIC_DEFAULT_OPUS_MODEL="glm-5.2[1m]" \
+    ANTHROPIC_DEFAULT_SONNET_MODEL="glm-5.2[1m]" \
+    ANTHROPIC_DEFAULT_HAIKU_MODEL="glm-4.7" \
+    API_TIMEOUT_MS=3000000 \
+    claude "$@"
+}
 # Lean Opus 4.8: 200K context, adaptive thinking off, no flicker
 alias claude-lean='CLAUDE_CODE_DISABLE_1M_CONTEXT=1 CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1 CLAUDE_CODE_NO_FLICKER=1 claude --dangerously-skip-permissions'
 
@@ -160,3 +180,6 @@ export PATH="/Users/vchun/.local/bin:$PATH"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+# Added by Antigravity IDE
+export PATH="/Users/vchun/.antigravity-ide/antigravity-ide/bin:$PATH"
