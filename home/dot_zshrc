@@ -38,7 +38,14 @@ if [[ -s "$NVM_DIR/nvm.sh" ]]; then
     npm() { __nvm_use_default; command npm "$@"; }
     npx() { __nvm_use_default; command npx "$@"; }
     corepack() { __nvm_use_default; command corepack "$@"; }
-    codex() { __nvm_use_default; command codex "$@"; }
+    codex() {
+        if [[ -x "$HOME/.codex/bin/codex" ]]; then
+            command "$HOME/.codex/bin/codex" "$@"
+            return
+        fi
+        __nvm_use_default
+        command codex "$@"
+    }
     gemini() { __nvm_use_default; command gemini "$@"; }
     ck() { __nvm_use_default; command ck "$@"; }
 fi
@@ -123,10 +130,17 @@ alias > ~/.cache/zsh-aliases.txt 2>/dev/null
 
 ### End of Zinit's installer chunk
 
-# Run Codex with separate local state per account so two accounts can stay logged in at once.
-alias codex1='CODEX_HOME=$HOME/.codex-account-1 codex'
-alias codex2='CODEX_HOME=$HOME/.codex-account-2 codex'
+# Keep ChatGPT account credentials and runtime state in separate Codex homes.
+codex-plus() {
+    CODEX_HOME="$HOME/.codex-plus" codex "$@"
+}
+
+codex-pro() {
+    CODEX_HOME="$HOME/.codex-pro" codex "$@"
+}
 alias clauded='claude --dangerously-skip-permissions'
+# Patch Claude Code header badge "Claude Max" -> "Claude Pro" (reapply after each update)
+alias claudepro='bash ~/.claude/skills/claude-van-patch/scripts/patch-claude-van.sh'
 
 # Local secrets (API keys, tokens) — file nằm ngoài chezmoi, không commit
 [[ -f "$HOME/.zsh-secrets" ]] && source "$HOME/.zsh-secrets"
