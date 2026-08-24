@@ -138,6 +138,7 @@ codex-plus() {
 codex-pro() {
     CODEX_HOME="$HOME/.codex-pro" codex "$@"
 }
+alias agy='agy --dangerously-skip-permissions'
 alias clauded='claude --dangerously-skip-permissions'
 # Patch Claude Code header badge "Claude Max" -> "Claude Pro" (reapply after each update)
 alias claudepro='bash ~/.claude/skills/claude-van-patch/scripts/patch-claude-van.sh'
