@@ -1,3 +1,7 @@
+{{- if stat "/usr/share/omarchy/version" -}}
+{{-   fail "This host runs Omarchy — use bavanchun/dotconfig-omarchy instead. See README." -}}
+{{- end -}}
+
 [data]
   machine = {{ .chezmoi.hostname | quote }}
   terminal = {{ promptChoice "terminal" (list "wezterm" "kitty" "alacritty" "none") "wezterm" | quote }}

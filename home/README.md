@@ -1,3 +1,7 @@
+> ⚠️ **Omarchy hosts**: DO NOT apply this repo on hosts running Omarchy.
+> Omarchy has its own chezmoi source at [bavanchun/dotconfig-omarchy](https://github.com/bavanchun/dotconfig-omarchy).
+> Applying this repo on an Omarchy host triggers a hard abort via `.chezmoi.toml.tmpl` guard.
+
 # dotconfig-term
 
 Cross-platform terminal/CLI dotfiles managed with [chezmoi](https://chezmoi.io).
