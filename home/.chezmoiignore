@@ -1,3 +1,6 @@
+# Tài liệu repo — không đổ vào $HOME
+README.md
+
 # Backup files (manual backups - replaced by git)
 **/*.bak
 **/*.bak2
