@@ -1,0 +1,27 @@
+# Quản lý bởi chezmoi (dotconfig-term) — sửa ở dot_gitconfig.tmpl, đừng sửa ~/.gitconfig.
+#
+# Lý do file này được đưa vào dotfiles: `gh auth setup-git` ghi đè ~/.gitconfig
+# và làm mất [user], khiến git không commit được ("Author identity unknown").
+# Giữ ở đây thì `chezmoi apply` luôn dựng lại được identity.
+
+[user]
+	name = VChun
+	email = hoangbavan4478@gmail.com
+
+{{- $gh := lookPath "gh" }}
+{{- if $gh }}
+
+# gh CLI làm credential helper cho HTTPS remote (tương đương `gh auth setup-git`).
+# `helper =` rỗng ở đầu là chủ ý: reset các helper kế thừa từ config cấp thấp hơn.
+[credential "https://github.com"]
+	helper =
+	helper = !{{ $gh }} auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !{{ $gh }} auth git-credential
+{{- end }}
+
+# Thiết lập riêng từng máy (token, signing key, workdir-specific...) để ở đây,
+# chezmoi không đụng tới. File không tồn tại cũng không sao.
+[include]
+	path = ~/.gitconfig.local
