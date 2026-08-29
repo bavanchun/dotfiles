@@ -48,7 +48,8 @@ $menu = dms ipc call spotlight toggle
 
 # DankMaterialShell thay cho waybar + swaync + rofi + wlogout + hyprlock +
 # hypridle + hyprpolkitagent + nm-applet + awww + cliphist.
-exec-once = dms run
+# dms chạy bằng systemd user service (dms.service), không dùng exec-once nữa
+# exec-once = dms run
 exec-once = fcitx5 -d
 exec-once = bash ~/.config/hypr/scripts/bluetooth-audio.sh
 exec-once = hyprswitch init
