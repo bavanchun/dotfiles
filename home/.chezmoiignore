@@ -9,26 +9,13 @@
 **/*.disabled
 **/*.rejected-*
 
-# AGS generated/dependencies
-dot_config/ags/@girs/**
-dot_config/ags/node_modules/**
-dot_config/ags/tsconfig.json
-
-# Waybar backups (keep only active configs)
-dot_config/waybar/*.bak
-dot_config/waybar/*.bak2
-dot_config/waybar/*.media-left-pre
-dot_config/waybar/*.phase4-pre
-
 # Hyprland - monitors.conf là auto-generated bởi nwg-displays
 dot_config/hypr/monitors.conf
 dot_config/hypr/monitors.conf.old
 
-# Matugen generated outputs (regenerated at runtime, NOT portable)
-.config/hypr/hyprland/colors.conf
-.config/hypr/hyprlock/colors.conf
-.config/fuzzel/fuzzel_theme.ini
-.config/waybar/colors.css
+# DankMaterialShell: settings.json do GUI quản lý, chứa cấu hình màn hình
+# theo từng máy nên không track. State runtime nằm ở ~/.local/state.
+dot_config/DankMaterialShell/settings.json
 
-# Claude Code workspace settings (absolute paths, machine-specific)
-dot_config/quickshell/exact_noctalia-shell/.claude/
+# DMS sinh ra khi apply theme (matugen), không portable giữa các máy
+dot_config/hypr/dms/
