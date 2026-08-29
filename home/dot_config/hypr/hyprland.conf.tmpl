@@ -25,7 +25,6 @@
 # Monitor config được tách ra theo từng máy, chezmoi template sẽ source đúng file
 # File được tạo tự động bởi run_onchange_after_ensure-monitor-fallback.sh nếu chưa có
 source = ~/.config/hypr/monitors-{{ .machine }}.conf
-source = ~/.config/hypr/hyprland/colors.conf
 
 
 ###################
@@ -37,7 +36,7 @@ source = ~/.config/hypr/hyprland/colors.conf
 # Set programs that you use
 $terminal = wezterm
 $fileManager = nautilus
-$menu = rofi -show drun
+$menu = dms ipc call spotlight toggle
 
 
 #################
@@ -47,20 +46,11 @@ $menu = rofi -show drun
 # Autostart necessary processes (like notifications daemons, status bars, etc.)
 # Or execute your favorite apps at launch like this:
 
-#exec-once = hyprpanel
-exec-once = hyprpm reload -n                                                                                          # load plugins (hyprexpo, ...)
-exec-once = bash ~/.config/hypr/scripts/waybar-monitor.sh
-exec-once = playerctld daemon
-exec-once = awww-daemon --no-cache
-exec-once = bash ~/.config/hypr/scripts/restore-wallpaper.sh
+# DankMaterialShell thay cho waybar + swaync + rofi + wlogout + hyprlock +
+# hypridle + hyprpolkitagent + nm-applet + awww + cliphist.
+exec-once = dms run
 exec-once = fcitx5 -d
-exec-once = swaync --skip-system-css
-exec-once = hypridle
-exec-once = hyprpolkitagent
-exec-once = nm-applet
 exec-once = bash ~/.config/hypr/scripts/bluetooth-audio.sh
-exec-once = wl-paste --type text --watch bash ~/.config/hypr/scripts/cliphist-store.sh
-exec-once = wl-paste --type image --watch bash ~/.config/hypr/scripts/cliphist-store.sh
 exec-once = hyprswitch init
 
 #############################
@@ -74,6 +64,7 @@ env = HYPRCURSOR_SIZE,24
 env = TERMINAL,wezterm
 
 # Fcitx5 input method
+env = GTK_IM_MODULE,fcitx
 env = QT_IM_MODULE,fcitx
 env = XMODIFIERS,@im=fcitx
 env = SDL_IM_MODULE,fcitx
@@ -94,7 +85,6 @@ env = GLFW_IM_MODULE,ibus
 
 # permission = /usr/(bin|local/bin)/grim, screencopy, allow
 # permission = /usr/(lib|libexec|lib64)/xdg-desktop-portal-hyprland, screencopy, allow
-permission = /usr/(bin|local/bin)/hyprpm, plugin, allow
 
 
 #####################
@@ -110,7 +100,11 @@ general {
 
     border_size = 3
 
-    # Border colors are set by matugen via source = ~/.config/hypr/hyprland/colors.conf
+    # Mau vien tinh. DMS chi sinh mau Hyprland dang Lua (~/.config/hypr/dms/colors.lua),
+    # khong con ghi file .conf nen khong source vao config hyprlang duoc.
+    # Muon vien doi mau theo wallpaper thi phai migrate sang hyprland.lua (xem README).
+    col.active_border = rgb(8AB4F8)
+    col.inactive_border = rgb(444746)
 
     # Set to true enable resizing windows by clicking and dragging on borders and gaps
     resize_on_border = true
@@ -340,27 +334,29 @@ bindl = , XF86AudioPlay, exec, playerctl play-pause
 bindl = , XF86AudioPrev, exec, playerctl previous
 
 bind = SUPER, F, fullscreen, 1
-bind = SUPER, SPACE, exec, $menu
+bind = SUPER, SPACE, exec, dms ipc call spotlight toggle                                                            # launcher
 bind = ALT, SPACE, exec, fcitx5-remote -t
 bind = ALT, TAB, exec, hyprswitch gui --mod-key alt --key tab --close mod-key-release --filter-current-workspace
-bind = SUPER, N, exec, swaync-client -t -sw
-bind = SUPER SHIFT, Q, exec, wlogout
-bind = SUPER SHIFT, V, exec, bash ~/.config/hypr/scripts/cliphist-pick.sh
+bind = SUPER, N, exec, dms ipc call notifications toggle                                                            # trung tam thong bao
+bind = SUPER, C, exec, dms ipc call control-center toggle                                                           # control center
+bind = SUPER, I, exec, dms ipc call settings toggle                                                                 # cai dat DMS
+bind = SUPER SHIFT, Q, exec, dms ipc call powermenu toggle                                                          # power menu
+bind = SUPER SHIFT, V, exec, dms ipc call clipboard toggle                                                          # lich su clipboard
 
-# Screenshot
-bind = , Print, exec, flameshot gui                                                                               # chụp vùng với Flameshot
-bind = CTRL SHIFT, 4, exec, flameshot gui                                                                         # chụp vùng với Flameshot
-bind = CTRL SHIFT, 3, exec, hyprshot -m region -o ~/Pictures/Screenshots                                           # chụp vùng → lưu file
-bind = CTRL SHIFT, 2, exec, hyprshot -m window --clipboard-only                                                    # chụp window → clipboard
-bind = SUPER, PRINT, exec, hyprshot -m output -o ~/Pictures/Screenshots                                            # chụp toàn màn hình
-bind = CTRL SHIFT, S, exec, hyprshot -m region -o - | swappy -f -                                                  # chụp vùng → annotate
-bind = CTRL SHIFT, 5, exec, bash -c 'f="$HOME/Pictures/Screenshots/$(date +%Y%m%d_%H%M%S).png"; if grim -g "$(slurp)" "$f"; then echo -n "$f" | wl-copy; notify-send -u normal -i camera-photo "Screenshot" "Path copied to clipboard:\n$f"; else notify-send -u normal "Screenshot" "Cancelled or failed"; fi' # chụp vùng → lưu + copy path → paste vào terminal
-bind = SUPER, Delete, exec, systemctl restart fprintd; hyprlock
-bind = SUPER, F9, exec, bash ~/.config/hypr/scripts/toggle-hyprsunset.sh
-bind = SUPER, F10, exec, bash ~/.config/hypr/scripts/toggle-theme.sh
-bind = SUPER, W, exec, bash ~/.config/hypr/scripts/wallpaper-picker.sh
-bind = SUPER, F1, exec, bash ~/.config/hypr/scripts/cheatsheet.sh
-bind = SUPER, grave, hyprexpo:expo, toggle         # SUPER + ` để xem tất cả workspace
+# Screenshot (dms screenshot — thay flameshot + hyprshot + grim/slurp)
+bind = , Print, exec, dms screenshot region                                                                        # chup vung -> file + clipboard
+bind = CTRL SHIFT, 4, exec, dms screenshot region                                                                  # chup vung -> file + clipboard
+bind = CTRL SHIFT, 3, exec, dms screenshot region                                                                  # chup vung -> file + clipboard
+bind = CTRL SHIFT, 2, exec, dms screenshot window --no-file                                                        # chup window -> chi clipboard
+bind = SUPER, PRINT, exec, dms screenshot full                                                                     # chup toan man hinh
+bind = CTRL SHIFT, S, exec, dms screenshot region --stdout --no-file --no-notify | swappy -f -                     # chup vung -> annotate
+bind = CTRL SHIFT, 5, exec, dms screenshot scroll                                                                  # chup cuon (anh dai)
+bind = SUPER, Delete, exec, systemctl restart fprintd; dms ipc call lock lock                                       # khoa man hinh
+bind = SUPER, F9, exec, dms ipc call night toggle                                                                   # loc anh sang xanh
+bind = SUPER, F10, exec, dms ipc call theme toggle                                                                  # sang / toi
+bind = SUPER, W, exec, dms ipc call dash toggle wallpaper                                                           # chon wallpaper
+bind = SUPER, F1, exec, dms ipc call keybinds toggle                                                                # cheatsheet phim tat
+bind = SUPER, grave, exec, dms ipc call hypr toggleOverview                                                         # xem tat ca workspace
 
 # Resize tiled windows with SUPER + CTRL + Vim keys
 binde = $mainMod CTRL, l, resizeactive, 30 0
@@ -425,16 +421,3 @@ windowrule {
 
 
 
-##############
-### PLUGINS ###
-##############
-
-plugin {
-    hyprexpo {
-        columns = 3
-        gap_size = 5
-        bg_col = rgba(111111dd)
-        workspace_method = center current
-        fingers = 3
-    }
-}

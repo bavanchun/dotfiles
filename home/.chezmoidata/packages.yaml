@@ -1,18 +1,18 @@
 packages:
   pacman:
     # Hyprland core
+    # hyprlock / hypridle / hyprpolkitagent / hyprsunset / hyprpaper đã bỏ:
+    # DMS lo lock screen, idle/sleep, polkit agent, night mode và wallpaper.
     - hyprland
-    - hyprpaper
-    - hypridle
-    - hyprlock
-    - hyprpolkitagent
-    - hyprsunset
     - xdg-desktop-portal-hyprland
-    # Bar / menu / notification
-    - waybar
-    - rofi
-    - fuzzel
-    - swaync
+    # Shell: DankMaterialShell (thay waybar + rofi + fuzzel + swaync + wlogout)
+    # dms-shell-hyprland kéo theo dms-shell, quickshell, dgop, accountsservice
+    - dms-shell-hyprland
+    - matugen              # DMS dùng để sinh theme Material You từ wallpaper
+    - cava                 # audio visualizer trong DMS
+    - wtype                # DMS paste từ lịch sử clipboard
+    - kimageformats        # thêm định dạng ảnh cho wallpaper
+    - qt6ct                # để DMS theme được app Qt
     # Terminal & shell
     - wezterm
     - kitty
@@ -22,10 +22,8 @@ packages:
     - tmux
     # Utilities
     - wl-clipboard
-    - cliphist
     - grim
     - slurp
-    - flameshot
     - swappy
     - brightnessctl
     - playerctl
@@ -42,7 +40,6 @@ packages:
     - base-devel
     # System
     - networkmanager
-    - network-manager-applet
     - bluez
     - bluez-utils
     - blueman
@@ -62,15 +59,14 @@ packages:
     - noto-fonts-emoji
     # Theming
     - papirus-icon-theme
-    # Matugen (official repo)
-    - matugen
+    - adw-gtk-theme         # thay adw-gtk3 (AUR cu da bi xoa, nay co trong extra)
   aur:
-    - awww
-    - hyprshot
-    - hyprswitch
-    - wlogout
-    - wezterm-cursor-trail
-    - kde-material-you-colors
-    - adw-gtk3
-    - ttf-google-sans-flex
+    # awww / wlogout / hyprshot / kde-material-you-colors đã bỏ:
+    # DMS lo wallpaper, power menu, screenshot và màu KDE (kcolorscheme).
+    #
+    # Đã gỡ 3 gói AUR không còn tồn tại (kiểm tra qua AUR RPC 2026-08-29):
+    #   adw-gtk3            -> thay bằng extra/adw-gtk-theme ở trên
+    #   ttf-google-sans-flex -> không còn, chưa có gói thay thế
+    #   wezterm-cursor-trail -> không còn, dùng extra/wezterm thường
+    - hyprswitch                        # alt-tab, DMS không thay thế
     - ttf-material-symbols-variable-git

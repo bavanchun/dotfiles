@@ -1,23 +1,25 @@
 # dotconfig-arch
 
-> Arch Linux desktop dotfiles (Hyprland ecosystem) — managed by [chezmoi](https://www.chezmoi.io/), themed with Material You from wallpaper, zero-touch bootstrap.
+> Arch Linux desktop dotfiles (Hyprland + DankMaterialShell) — managed by [chezmoi](https://www.chezmoi.io/), zero-touch bootstrap.
 >
 > **Terminal/CLI configs** live in a separate repo: [bavanchun/dotconfig-term](https://github.com/bavanchun/dotconfig-term)
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│  Compositor  : Hyprland (+ hyprexpo)                │
-│  Bar         : Waybar                               │
-│  Launcher    : Rofi · Fuzzel                        │
-│  Notify      : SwayNC                               │
+│  Compositor  : Hyprland                             │
+│  Shell       : DankMaterialShell (Quickshell + Go)  │
+│    ├ bar, launcher, notifications, control center   │
+│    ├ lock screen, idle/sleep, polkit agent          │
+│    ├ clipboard, screenshot, wallpaper, theming      │
+│    └ điều khiển qua `dms ipc call ...`              │
 │  Terminal    : WezTerm · Kitty · Alacritty          │
-│  Shell       : Zsh + Zinit + Starship               │
-│  Lock/Idle   : Hyprlock · Hypridle                  │
-│  Wallpaper   : awww (với transition)                │
-│  Theming     : Matugen (Material You từ wallpaper)  │
-│  Editor      : Neovim (LazyVim)                     │
+│  Input       : fcitx5 + Bamboo (Alt+Space)          │
+│  Theming     : Material You từ wallpaper (matugen)  │
 └─────────────────────────────────────────────────────┘
 ```
+
+DMS thay cho toàn bộ stack cũ: **waybar, rofi, fuzzel, swaync, wlogout, hyprlock,
+hypridle, hyprpolkitagent, nm-applet, awww, cliphist, flameshot, hyprshot**.
 
 ---
 
@@ -27,28 +29,27 @@
 - [Quick Start](#quick-start)
 - [Architecture](#architecture)
 - [Key Bindings](#key-bindings)
-- [Scripts](#scripts)
 - [Theming](#theming)
 - [Per-machine Configuration](#per-machine-configuration)
 - [Repository Structure](#repository-structure)
 - [Daily Workflow](#daily-workflow)
-- [Customization](#customization)
 - [Troubleshooting](#troubleshooting)
-- [Credits](#credits)
 
 ---
 
 ## Features
 
 - **Zero-touch bootstrap** — chạy 1 lệnh trên máy Arch mới là setup xong toàn bộ
-- **Auto package installation** — khai báo packages trong `.chezmoidata/packages.yaml`, chezmoi tự cài qua pacman + yay
-- **Per-machine configs** — `machine` variable auto-detect từ hostname, monitor config riêng cho từng máy
-- **Material You theming** — seed color `#c73e64`, matugen regenerate toàn bộ màu từ wallpaper
-- **Dark/Light toggle** — `SUPER+F10` đổi theme toàn hệ thống (GTK + waybar + swaync + alacritty + matugen)
-- **Smart pickers** — Terminal picker (`SUPER+T`), Editor picker, Wallpaper picker với fuzzel UI
-- **Zero hardcode** — không có path/hostname/username cụ thể trong configs portable
-- **Clipboard manager** — cliphist tự lưu history, `SUPER+SHIFT+V` để dán từ history
-- **Fingerprint unlock** — hyprlock tích hợp fprintd
+- **Ít mảnh ghép** — một shell lo bar + launcher + notification + lock + clipboard,
+  thay vì 10 daemon rời rạc phải tự nối với nhau
+- **Cài từ repo chính thức** — `dms-shell-hyprland` nằm trong `extra`, không phải
+  build quickshell fork như caelestia hay end-4
+- **Config tách khỏi code shell** — tuỳ chỉnh nằm ở `~/.config/DankMaterialShell/settings.json`
+  (chỉnh bằng GUI), `pacman -Syu` nâng shell mà không đụng vào
+- **Per-machine configs** — biến `machine` auto-detect từ hostname, monitor config riêng từng máy
+- **Material You theming** — matugen sinh màu từ wallpaper cho GTK, Qt, kitty,
+  alacritty, wezterm, nvim, KDE
+- **Bộ gõ tiếng Việt** — fcitx5 + Bamboo, `Alt+Space` chuyển Việt/Anh
 
 ---
 
@@ -78,22 +79,28 @@ Bước 4 sẽ tự động:
 |------|-----------|
 | 1 | Render `~/.config/chezmoi/chezmoi.toml` với `machine = hostname` |
 | 2 | Cài `yay` (AUR helper) từ source nếu chưa có |
-| 3 | Cài **~50 pacman + ~10 AUR packages** từ `.chezmoidata/packages.yaml` |
-| 4 | Apply tất cả configs vào `~/.config/` |
+| 3 | Cài **48 pacman + 2 AUR packages** từ `.chezmoidata/packages.yaml` |
+| 4 | Apply configs vào `~/.config/` |
 | 5 | Enable systemd: `NetworkManager`, `bluetooth`, `power-profiles-daemon` |
 | 6 | Tạo fallback monitor config nếu chưa có `monitors-<hostname>.conf` |
 
-> `zsh` default shell được xử lý bởi `dotconfig-term` repo (step 3).
+> `zsh` default shell được xử lý bởi `dotconfig-term` repo (bước 3).
 
 ### Hậu install
 
 ```bash
-# Copy avatar + wallpapers
-cp /path/to/avatar.jpg ~/Pictures/avatar-hyprlock.jpg
 mkdir -p ~/Pictures/Wallpapers
 cp /path/to/wallpapers/*.jpg ~/Pictures/Wallpapers/
 
 # Logout và chọn Hyprland trong display manager
+```
+
+Lần đầu chạy, DMS hiện **greeter first-launch** để chọn theme và wallpaper.
+
+Kiểm tra tình trạng cài đặt bất cứ lúc nào:
+
+```bash
+dms doctor
 ```
 
 ---
@@ -115,157 +122,117 @@ chezmoi init --apply
         │       └─► pacman -S + yay -S từ .chezmoidata/packages.yaml
         │
         ├─► Apply dotfiles (dot_config/** → ~/.config/**)
-        │       ├─► Render templates (hyprland.conf.tmpl, hyprlock.conf.tmpl, ...)
-        │       └─► Create symlinks (theme dark/light)
+        │       └─► Render hyprland.conf.tmpl với machine = hostname
         │
         ├─► run_onchange_after_enable-services.sh
         │       └─► systemctl enable NetworkManager bluetooth power-profiles-daemon
-        │           (chsh handled by dotconfig-term repo)
         │
         └─► run_onchange_after_ensure-monitor-fallback.sh.tmpl
-                └─► create monitors-<hostname>.conf nếu chưa có
+                └─► tạo monitors-<hostname>.conf nếu chưa có
 ```
 
-### Theming pipeline
+### Repo này quản lý gì, DMS quản lý gì
 
-```
-User đổi wallpaper (SUPER+W)
-        │
-        ├─► awww img <wallpaper> --transition ...
-        │
-        └─► matugen image <wallpaper> -m dark/light
-                ├─► ~/.config/hypr/hyprland/colors.conf
-                ├─► ~/.config/hypr/hyprlock/colors.conf
-                ├─► ~/.config/waybar/colors.css
-                ├─► ~/.config/fuzzel/fuzzel_theme.ini
-                ├─► ~/.config/gtk-3.0/gtk.css
-                ├─► ~/.config/gtk-4.0/gtk.css
-                └─► KDE material-you-colors
-        │
-        ├─► pkill -SIGUSR2 waybar        # reload waybar
-        └─► swaync-client --reload-css   # reload notifications
-```
+| Thuộc repo (chezmoi) | Thuộc DMS (GUI / `dms ipc`) |
+|---|---|
+| `hyprland.conf` — keybind, window rule, layout | Bar, launcher, notification, control center |
+| `monitors-<host>.conf` | Wallpaper, theme, màu Material You |
+| Danh sách package | Lock screen, idle/sleep timeout |
+| Autostart (`exec-once`) | Dock, widget, plugin |
+| Script `bluetooth-audio.sh` | Clipboard history, screenshot |
+
+Ranh giới này là lý do chính chọn DMS: nâng cấp shell không ghi đè tuỳ chỉnh của bạn.
 
 ---
 
 ## Key Bindings
 
-`$mainMod` = `SUPER` (Windows key)
+`SUPER` là phím chính. Xem cheatsheet đầy đủ ngay trong shell bằng `SUPER+F1`.
+
+### Shell (DMS)
+
+| Phím | Hành động |
+|------|-----------|
+| `SUPER+SPACE` | Launcher (spotlight) |
+| `SUPER+N` | Trung tâm thông báo |
+| `SUPER+C` | Control center |
+| `SUPER+I` | Cài đặt DMS |
+| `SUPER+SHIFT+Q` | Power menu |
+| `SUPER+SHIFT+V` | Lịch sử clipboard |
+| `SUPER+W` | Chọn wallpaper |
+| `SUPER+F1` | Cheatsheet phím tắt |
+| `SUPER+F9` | Bật/tắt lọc ánh sáng xanh |
+| `SUPER+F10` | Đổi sáng / tối |
+| `SUPER+\`` | Xem tất cả workspace (overview) |
+| `SUPER+Delete` | Khoá màn hình |
 
 ### Window management
 
-| Binding | Action |
-|---------|--------|
-| `SUPER + Q` | Close window |
-| `SUPER + F` | Fullscreen |
-| `SUPER + V` | Toggle floating |
-| `SUPER + P` | Pseudo tile (dwindle) |
-| `SUPER + \` | Toggle split (dwindle) |
-| `SUPER + H/J/K/L` | Focus left/down/up/right |
-| `SUPER + SHIFT + H/J/K/L` | Swap window |
-| `SUPER + CTRL + H/J/K/L` | Resize |
-| `SUPER + Mouse drag` | Move window |
-| `SUPER + RMB drag` | Resize window |
+| Phím | Hành động |
+|------|-----------|
+| `SUPER+T` | Terminal |
+| `SUPER+Q` | Đóng cửa sổ |
+| `SUPER+E` | File manager |
+| `SUPER+V` | Toggle floating |
+| `SUPER+F` | Fullscreen |
+| `SUPER+h/j/k/l` | Chuyển focus |
+| `SUPER+SHIFT+h/j/k/l` | Đổi chỗ cửa sổ |
+| `SUPER+CTRL+h/j/k/l` | Resize |
+| `SUPER+1..0` | Chuyển workspace |
+| `SUPER+SHIFT+1..0` | Đẩy cửa sổ sang workspace |
+| `SUPER+S` | Special workspace |
+| `ALT+TAB` | hyprswitch |
 
-### Workspaces
+### Screenshot
 
-| Binding | Action |
-|---------|--------|
-| `SUPER + 1-9,0` | Switch to workspace 1-10 |
-| `SUPER + SHIFT + 1-9,0` | Move window to workspace |
-| `SUPER + S` | Toggle scratchpad |
+| Phím | Hành động |
+|------|-----------|
+| `Print` / `CTRL+SHIFT+4` / `CTRL+SHIFT+3` | Chụp vùng → file + clipboard |
+| `CTRL+SHIFT+2` | Chụp cửa sổ → chỉ clipboard |
+| `SUPER+Print` | Chụp toàn màn hình |
+| `CTRL+SHIFT+S` | Chụp vùng → annotate bằng swappy |
+| `CTRL+SHIFT+5` | Chụp cuộn (ảnh dài) |
 
-### Apps & Pickers
+### Khác
 
-| Binding | Action |
-|---------|--------|
-| `SUPER + T` | Terminal picker (WezTerm/Kitty/Alacritty với 5s countdown) |
-| `SUPER + E` | File manager (Nautilus) |
-| `SUPER + SPACE` | App launcher (Rofi) |
-| `SUPER + W` | Wallpaper picker |
-| `SUPER + N` | Notification panel (SwayNC) |
-| `SUPER + F1` | Keybinding cheatsheet |
-| `ALT + SPACE` | Toggle fcitx5 (input method) |
-
-### Theming
-
-| Binding | Action |
-|---------|--------|
-| `SUPER + F10` | Toggle dark/light theme |
-| `SUPER + F9` | Toggle hyprsunset (night light) |
-
-### Screenshots
-
-| Binding | Action |
-|---------|--------|
-| `Print` · `CTRL + SHIFT + 4` | Flameshot (region, annotated) |
-| `CTRL + SHIFT + 3` | hyprshot region → file |
-| `CTRL + SHIFT + 2` | hyprshot window → clipboard |
-| `SUPER + PRINT` | hyprshot fullscreen → file |
-| `CTRL + SHIFT + S` | hyprshot region → swappy (annotate) |
-| `CTRL + SHIFT + X` | grim+slurp → file + copy path |
-
-### Clipboard & session
-
-| Binding | Action |
-|---------|--------|
-| `SUPER + SHIFT + V` | Clipboard history picker (cliphist) |
-| `SUPER + SHIFT + Q` | wlogout menu |
-| `SUPER + SHIFT + M` | Exit Hyprland |
-| `SUPER + Delete` | Lock screen (hyprlock) |
-
-### Hardware keys
-
-Volume, brightness, media keys đều được bind qua `XF86*` → `wpctl` / `brightnessctl` / `playerctl`.
-
----
-
-## Scripts
-
-Tất cả trong `~/.config/hypr/scripts/`:
-
-| Script | Mô tả |
-|--------|-------|
-| `terminal-picker.sh` | Fuzzel UI chọn terminal (5s countdown, default WezTerm) |
-| `editor-picker.sh` | Fuzzel UI chọn editor (VS Code, Cursor, Zed, Nvim, Helix) |
-| `wallpaper-picker.sh` | Fuzzel UI chọn wallpaper từ `~/Pictures/Wallpapers/` |
-| `set-wallpaper.sh` | Set wallpaper + transition + regenerate matugen colors |
-| `restore-wallpaper.sh` | Restore wallpaper gần nhất khi login |
-| `toggle-theme.sh` | Đổi dark/light, sync GTK + waybar + swaync + alacritty + matugen |
-| `toggle-hyprsunset.sh` | Bật/tắt night light (hyprsunset) |
-| `cheatsheet.sh` | Hiển thị keybinding cheatsheet (kitty + bat + fzf) |
-| `cliphist-store.sh` | Background watcher lưu clipboard history |
-| `cliphist-pick.sh` | Fuzzel picker cho clipboard history |
-| `cliphist-list.sh` | Format clipboard history cho picker |
-| `waybar-monitor.sh` | Auto-restart waybar khi crash |
-| `ags-media.sh` | Start/stop AGS media panel |
-| `bluetooth-audio.sh` | Auto-connect Bluetooth audio on startup |
+| Phím | Hành động |
+|------|-----------|
+| `ALT+SPACE` | Chuyển tiếng Việt / tiếng Anh (fcitx5) |
+| Phím âm lượng / độ sáng | wpctl / brightnessctl |
 
 ---
 
 ## Theming
 
-- **Seed color**: `#c73e64`
-- **Mode toggle**: `SUPER+F10`
-- **State file**: `~/.config/theme-mode` (`dark` | `light`)
-- **GTK**: `adw-gtk3-dark` / `adw-gtk3`
-- **Symlinks** (quản lý bởi chezmoi templates + `run_after_apply-theme.sh`):
-  - `waybar/style.css` → `style-{dark,light}.css`
-  - `swaync/style.css` → `style-{dark,light}.css` (Catppuccin Mocha / Latte)
-- **Alacritty theme symlink** được xử lý bởi `dotconfig-term` repo.
-- **Matugen configs**: `dot_config/matugen/templates/` generate ra Hyprland, Waybar, Fuzzel, GTK, KDE colors
+DMS sinh màu Material You từ wallpaper qua matugen, áp cho:
 
-### Đổi wallpaper
-
-```bash
-# Qua keybind
-SUPER + W
-
-# Hoặc trực tiếp
-bash ~/.config/hypr/scripts/set-wallpaper.sh /path/to/new.jpg
+```
+GTK3 · GTK4 · Qt (qt6ct) · kitty · alacritty · wezterm · nvim · KDE (kcolorscheme) · dgop
 ```
 
-Script tự regenerate toàn bộ màu theo Material You từ wallpaper mới.
+Kiểm tra app nào đang được theme:
+
+```bash
+dms matugen check
+```
+
+Đổi wallpaper / theme:
+
+```bash
+dms ipc call dash toggle wallpaper   # UI chọn wallpaper (SUPER+W)
+dms ipc call wallpaper next          # wallpaper kế tiếp
+dms ipc call theme toggle            # sáng / tối (SUPER+F10)
+```
+
+### Màu viền cửa sổ Hyprland
+
+DMS chỉ sinh màu Hyprland dạng **Lua** (`~/.config/hypr/dms/colors.lua`) theo
+Hyprland 0.55+, không còn ghi file `.conf`. Repo này vẫn dùng config hyprlang
+(`hyprland.conf`) nên **màu viền là tĩnh**, đặt trong khối `general {}`.
+
+Muốn viền đổi màu theo wallpaper thì phải migrate config Hyprland sang Lua
+(`dms setup` sẽ sinh `hyprland.lua` + `dms/*.lua`, keybind riêng để ở
+`dms/binds-user.lua`). Đó là thay đổi lớn, chưa làm trong repo này.
 
 ---
 
@@ -273,266 +240,129 @@ Script tự regenerate toàn bộ màu theo Material You từ wallpaper mới.
 
 ### Machine detection
 
-`machine` variable = hostname, set tự động bởi `.chezmoi.toml.tmpl`:
+`.chezmoi.toml.tmpl` set `machine = {{ .chezmoi.hostname }}`. Biến này được dùng để
+source đúng file monitor:
 
-```toml
-[data]
-  machine = {{ .chezmoi.hostname | quote }}
+```
+source = ~/.config/hypr/monitors-{{ .machine }}.conf
 ```
 
 ### Monitor config
 
-Mỗi máy có file monitor riêng, **không** track bởi chezmoi (mỗi hardware khác nhau):
+Mỗi máy có một file riêng, commit vào repo:
 
 ```
-~/.config/hypr/monitors-<hostname>.conf
+dot_config/hypr/monitors-vchun.conf
+dot_config/hypr/monitors-<hostname>.conf
 ```
 
-- Nếu đã có file per-hostname trong source: `dot_config/hypr/monitors-<hostname>.conf` → chezmoi sync
-- Nếu chưa có: `run_onchange_after_ensure-monitor-fallback.sh` tự tạo fallback `monitor = , preferred, auto, 1`
-- Dùng `nwg-displays` hoặc edit thủ công để setup chính xác theo hardware
-
-### Ví dụ: thêm máy `workstation`
-
-```bash
-# Trên máy mới có hostname "workstation"
-hostnamectl set-hostname workstation
-chezmoi init --source ~/.local/share/chezmoi-arch --apply git@github.com:bavanchun/dotconfig-arch.git
-
-# Fallback monitor config được tạo. Sửa theo hardware:
-nwg-displays   # hoặc vim ~/.config/hypr/monitors-workstation.conf
-
-# Nếu muốn commit config riêng cho máy này vào repo:
-chezmoi cd
-cp ~/.config/hypr/monitors-workstation.conf dot_config/hypr/
-git add dot_config/hypr/monitors-workstation.conf
-git commit -m "add: monitor config for workstation"
-git push
-```
+Nếu file chưa tồn tại, `run_onchange_after_ensure-monitor-fallback.sh.tmpl` tạo
+fallback `monitor=,preferred,auto,1`. Sửa lại theo hardware rồi commit.
 
 ---
 
 ## Repository Structure
 
 ```
-~/.local/share/chezmoi/
-├── README.md                                        ← bạn đang đọc
-├── .chezmoi.toml.tmpl                               ← auto-render chezmoi config (machine = hostname)
-├── .chezmoiignore                                   ← exclude patterns
-├── .chezmoidata/
-│   └── packages.yaml                                ← pacman + AUR package list
-├── run_onchange_before_01-install-yay.sh            ← install yay AUR helper
-├── run_onchange_before_02-install-packages.sh.tmpl  ← install all packages
-├── run_onchange_after_enable-services.sh            ← enable systemd + set zsh
-├── run_onchange_after_ensure-monitor-fallback.sh.tmpl
-├── run_after_apply-theme.sh                         ← theme symlinks refresh
-├── dot_zshrc                                        ← zsh config (zinit + starship + nvm + brew)
-└── dot_config/
-    ├── hypr/
-    │   ├── hyprland.conf.tmpl                       ← TEMPLATE (edit .tmpl, không re-add)
-    │   ├── hyprlock.conf.tmpl                       ← TEMPLATE (dùng $HOME via chezmoi)
-    │   ├── hypridle.conf
-    │   ├── hyprpaper.conf
-    │   ├── monitors-<hostname>.conf                 ← per-machine, không track chung
-    │   └── scripts/                                 ← custom scripts
-    ├── waybar/
-    │   ├── config.jsonc                             ← main waybar config
-    │   ├── style-dark.css · style-light.css         ← symlinked → style.css
-    │   └── scripts/                                 ← waybar module scripts
-    ├── matugen/
-    │   ├── config.toml                              ← template mappings
-    │   └── templates/                               ← templates cho hypr/waybar/gtk/kde
-    ├── alacritty/
-    │   ├── theme-dark.toml · theme-light.toml       ← symlinked → theme.toml
-    │   └── alacritty.toml
-    ├── rofi/ · fuzzel/ · swaync/ · wlogout/         ← menu/notify tools
-    ├── kitty/ · wezterm/                            ← alt terminals
-    ├── ags/                                         ← AGS GTK4 shell (media panel)
-    ├── quickshell/                                  ← Quickshell configs
-    ├── nvim/                                        ← LazyVim setup
-    ├── tmux/
-    └── starship.toml
+.chezmoi.toml.tmpl                      # machine = hostname
+.chezmoidata/packages.yaml              # danh sách package (pacman + aur)
+.chezmoiignore
+
+dot_config/hypr/
+  hyprland.conf.tmpl                    # config chính (template)
+  monitors-vchun.conf                   # monitor theo máy
+  empty_workspaces.conf
+  scripts/executable_bluetooth-audio.sh # auto switch sink sang bluetooth
+
+run_onchange_before_01-install-yay.sh
+run_onchange_before_02-install-packages.sh.tmpl
+run_onchange_after_enable-services.sh
+run_onchange_after_ensure-monitor-fallback.sh.tmpl
 ```
 
 ### File prefix convention (chezmoi)
 
-| Prefix | Nghĩa |
-|--------|-------|
-| `dot_` | Đổi thành `.` khi apply (`dot_config/` → `.config/`) |
-| `executable_` | Set execute bit khi apply |
-| `symlink_` | Tạo symlink (nội dung file = target path) |
-| `*.tmpl` | Go template, render trước khi apply |
-| `run_once_*` | Chạy 1 lần duy nhất |
-| `run_onchange_*` | Chạy lại khi content thay đổi (hash-based) |
-| `run_before_*` / `run_after_*` | Chạy trước/sau khi apply files |
+| Prefix | Ý nghĩa |
+|---|---|
+| `dot_` | `.` ở đầu tên file đích |
+| `executable_` | chmod +x sau khi apply |
+| `.tmpl` | render bằng Go template |
+| `run_once_` | chạy đúng một lần |
+| `run_onchange_` | chạy lại khi nội dung script đổi |
+| `before_` / `after_` | chạy trước / sau khi apply dotfiles |
 
 ---
 
 ## Daily Workflow
 
-**Quy tắc vàng**: KHÔNG edit trực tiếp `~/.config/<app>/...`, LUÔN edit trong chezmoi source.
-
 ### Sửa một config
 
 ```bash
 # 1. Edit trong source
-vim ~/.local/share/chezmoi/dot_config/waybar/config.jsonc
+chezmoi edit --source ~/.local/share/chezmoi-arch ~/.config/hypr/hyprland.conf
 
-# 2. Apply sang ~/.config/
-chezmoi apply
+# 2. Apply
+chezmoi apply --source ~/.local/share/chezmoi-arch
 
-# 3. Reload app nếu cần
-# waybar: pkill -SIGUSR2 waybar
-# hyprland: hyprctl reload
+# 3. Reload
+hyprctl reload          # Hyprland
+dms restart             # DMS
 
 # 4. Commit + push
-chezmoi cd
-git add .
-git commit -m "feat(waybar): mô tả thay đổi"
-git push
+chezmoi cd --source ~/.local/share/chezmoi-arch && git add -A && git commit && git push
 ```
 
-### Sửa template (`.tmpl`)
+### Sửa cài đặt shell
 
-**Không** dùng `chezmoi re-add` cho file `.tmpl` — nó sẽ ghi đè template bằng rendered output. Luôn edit `.tmpl` thủ công.
+Cài đặt DMS **không** nằm trong repo — chỉnh bằng GUI (`SUPER+I`) hoặc:
 
-### Sửa theme (dark/light)
-
-Toggle runtime: `SUPER+F10`.
-
-Đổi seed color: edit `dot_config/matugen/config.toml` hoặc dùng matugen hex mode.
+```bash
+dms ipc call settings set <key> <value>
+```
 
 ### Thêm/bỏ package
 
-```bash
-vim ~/.local/share/chezmoi/.chezmoidata/packages.yaml
-chezmoi apply   # sẽ re-run install script vì hash đã đổi
-chezmoi cd
-git add .chezmoidata/packages.yaml
-git commit -m "feat: add/remove <package>"
-git push
-```
-
----
-
-## Customization
-
-### Đổi seed color
-
-```toml
-# dot_config/matugen/config.toml (nếu cấu hình ở đó)
-# hoặc chạy trực tiếp:
-matugen color hex "#yourhex" -m dark
-```
-
-Chạy lại `set-wallpaper.sh` hoặc `toggle-theme.sh` để reload.
-
-### Đổi default terminal
-
-Sửa `$terminal` trong `dot_config/hypr/hyprland.conf.tmpl`:
-
-```
-$terminal = wezterm   # hoặc kitty, alacritty
-```
-
-### Đổi default app launcher
-
-```
-$menu = rofi -show drun   # hoặc fuzzel
-```
-
-### Thêm keybinding
-
-Edit `dot_config/hypr/hyprland.conf.tmpl`, section `bind = ...`, rồi `chezmoi apply && hyprctl reload`.
-
-### Per-host override
-
-Dùng chezmoi conditional trong `.tmpl` files:
-
-```
-{{ if eq .machine "laptop" }}
-# laptop-specific
-{{ else if eq .machine "workstation" }}
-# workstation-specific
-{{ end }}
-```
+Sửa `.chezmoidata/packages.yaml` rồi `chezmoi apply` — script install chạy lại
+vì hash nội dung đổi.
 
 ---
 
 ## Troubleshooting
 
-### `chezmoi apply` báo "config file template has changed"
-
-Chạy `chezmoi init` không kèm URL để regenerate `~/.config/chezmoi/chezmoi.toml` từ template mới.
-
-### Waybar không hiện sau khi apply
+### DMS không lên sau khi login
 
 ```bash
-pkill waybar
-bash ~/.config/hypr/scripts/waybar-monitor.sh restart
+dms doctor              # kiểm tra cài đặt + dependency
+pgrep -af 'dms|qs -p'   # kiểm tra tiến trình
+dms run                 # chạy tay để xem log
 ```
 
-### Theme không sync sau toggle
+### Bar hiện nhưng thiếu tính năng
 
-```bash
-# Regenerate symlinks thủ công
-bash ~/.local/share/chezmoi/run_after_apply-theme.sh
+`dms doctor` liệt kê optional dependency còn thiếu (matugen, cava, wtype,
+power-profiles-daemon, cups-pk-helper, ...).
 
-# Hoặc refresh waybar/swaync
-pkill -SIGUSR2 waybar
-swaync-client --reload-css
-```
+### Background blur báo Unsupported
 
-### Matugen colors file không generate
-
-```bash
-# Đảm bảo wallpaper đã set
-matugen image ~/.config/wallpaper-current -m dark
-```
+Cần Hyprland ≥ 0.55 **đang chạy**. Nếu vừa `pacman -Syu` nâng Hyprland thì phải
+logout/reboot, vì session cũ vẫn chạy binary cũ.
 
 ### `chezmoi apply` fail vì sudo cần TTY
 
-Bootstrap scripts (`run_onchange_before_*`) cần sudo. Chạy từ terminal thực (có TTY) hoặc pre-cache sudo:
-
-```bash
-sudo -v && chezmoi apply
-```
-
-### Monitor config không khớp
-
-```bash
-# Regenerate bằng nwg-displays
-nwg-displays
-
-# Hoặc edit trực tiếp
-vim ~/.config/hypr/monitors-$(hostname).conf
-hyprctl reload
-```
+Chạy `sudo -v` trước, hoặc chạy `chezmoi apply` trong terminal có TTY.
 
 ### Hyprland config reload failed
 
 ```bash
-# Check syntax
-hyprctl reload
-
-# Full restart nếu sửa permission/ecosystem blocks
-hyprctl dispatch exit
-# (logout/login)
+hyprctl configerrors
 ```
 
 ---
 
 ## Credits
 
-- [Hyprland](https://hyprland.org/) — dynamic tiling Wayland compositor
-- [chezmoi](https://www.chezmoi.io/) — dotfiles manager
-- [matugen](https://github.com/InioX/matugen) — Material You color generation
-- [Waybar](https://github.com/Alexays/Waybar) — customizable Wayland bar
-- [end-4 illogical-impulse](https://github.com/end-4/dots-hyprland) — inspiration cho AGS widgets
-- [Catppuccin](https://github.com/catppuccin) — swaync theme
-
----
-
-## License
-
-Personal dotfiles — use at your own risk. Fork, copy, remix tự do.
+- [Hyprland](https://hypr.land)
+- [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell)
+- [Quickshell](https://quickshell.org)
+- [chezmoi](https://www.chezmoi.io)
+- [matugen](https://github.com/InioX/matugen)
