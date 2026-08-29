@@ -8,3 +8,10 @@
 **/*.disabled
 
 .claude/
+
+# Repo docs / stray dirs — không đổ thẳng vào $HOME
+README.md
+plans
+plans/**
+yazi
+yazi/**
