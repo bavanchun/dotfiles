@@ -36,7 +36,7 @@ source = ~/.config/hypr/monitors-{{ .machine }}.conf
 # Set programs that you use
 $terminal = wezterm
 $fileManager = nautilus
-$menu = dms ipc call spotlight toggle
+$menu = advs ipc call spotlight toggle
 
 
 #################
@@ -48,8 +48,8 @@ $menu = dms ipc call spotlight toggle
 
 # DankMaterialShell thay cho waybar + swaync + rofi + wlogout + hyprlock +
 # hypridle + hyprpolkitagent + nm-applet + awww + cliphist.
-# dms chạy bằng systemd user service (dms.service), không dùng exec-once nữa
-# exec-once = dms run
+# Shell chạy bằng systemd user service (advs.service), không dùng exec-once
+# exec-once = advs run
 exec-once = fcitx5 -d
 exec-once = bash ~/.config/hypr/scripts/bluetooth-audio.sh
 exec-once = hyprswitch init
@@ -218,8 +218,13 @@ cursor {
 
 # https://wiki.hypr.land/Configuring/Variables/#misc
 misc {
-    force_default_wallpaper = -1 # Set to 0 or 1 to disable the anime mascot wallpapers
-    disable_hyprland_logo = false # If true disables the random hyprland logo / anime girl background. :(
+    # 3 dòng dưới cho khoảng ~2.5s từ lúc Hyprland vẽ frame đầu tới lúc
+    # AriadnevShell lên bar: nền đen trùng với layer nền của shell
+    # (wallpaperBackgroundColorMode=black) nên chuyển cảnh liền mạch,
+    # thay vì lộ wallpaper mặc định của Hyprland rồi mới nhảy sang shell.
+    force_default_wallpaper = 0
+    disable_hyprland_logo = true
+    background_color = rgb(000000)
 }
 
 
@@ -336,29 +341,29 @@ bindl = , XF86AudioPlay, exec, playerctl play-pause
 bindl = , XF86AudioPrev, exec, playerctl previous
 
 bind = SUPER, F, fullscreen, 1
-bind = SUPER, SPACE, exec, dms ipc call spotlight toggle                                                            # launcher
+bind = SUPER, SPACE, exec, advs ipc call spotlight toggle                                                            # launcher
 bind = ALT, SPACE, exec, fcitx5-remote -t
 bind = ALT, TAB, exec, hyprswitch gui --mod-key alt --key tab --close mod-key-release --filter-current-workspace
-bind = SUPER, N, exec, dms ipc call notifications toggle                                                            # trung tam thong bao
-bind = SUPER, C, exec, dms ipc call control-center toggle                                                           # control center
-bind = SUPER, I, exec, dms ipc call settings toggle                                                                 # cai dat DMS
-bind = SUPER SHIFT, Q, exec, dms ipc call powermenu toggle                                                          # power menu
-bind = SUPER SHIFT, V, exec, dms ipc call clipboard toggle                                                          # lich su clipboard
+bind = SUPER, N, exec, advs ipc call notifications toggle                                                            # trung tam thong bao
+bind = SUPER, C, exec, advs ipc call control-center toggle                                                           # control center
+bind = SUPER, I, exec, advs ipc call settings toggle                                                                 # cai dat DMS
+bind = SUPER SHIFT, Q, exec, advs ipc call powermenu toggle                                                          # power menu
+bind = SUPER SHIFT, V, exec, advs ipc call clipboard toggle                                                          # lich su clipboard
 
-# Screenshot (dms screenshot — thay flameshot + hyprshot + grim/slurp)
-bind = , Print, exec, dms screenshot region                                                                        # chup vung -> file + clipboard
-bind = CTRL SHIFT, 4, exec, dms screenshot region                                                                  # chup vung -> file + clipboard
-bind = CTRL SHIFT, 3, exec, dms screenshot region                                                                  # chup vung -> file + clipboard
-bind = CTRL SHIFT, 2, exec, dms screenshot window --no-file                                                        # chup window -> chi clipboard
-bind = SUPER, PRINT, exec, dms screenshot full                                                                     # chup toan man hinh
-bind = CTRL SHIFT, S, exec, dms screenshot region --stdout --no-file --no-notify | swappy -f -                     # chup vung -> annotate
-bind = CTRL SHIFT, 5, exec, dms screenshot scroll                                                                  # chup cuon (anh dai)
-bind = SUPER, Delete, exec, systemctl restart fprintd; dms ipc call lock lock                                       # khoa man hinh
-bind = SUPER, F9, exec, dms ipc call night toggle                                                                   # loc anh sang xanh
-bind = SUPER, F10, exec, dms ipc call theme toggle                                                                  # sang / toi
-bind = SUPER, W, exec, dms ipc call dash toggle wallpaper                                                           # chon wallpaper
-bind = SUPER, F1, exec, dms ipc call hypr toggleBinds                                                                # cheatsheet phim tat
-bind = SUPER, grave, exec, dms ipc call hypr toggleOverview                                                         # xem tat ca workspace
+# Screenshot (advs screenshot — thay flameshot + hyprshot + grim/slurp)
+bind = , Print, exec, advs screenshot region                                                                        # chup vung -> file + clipboard
+bind = CTRL SHIFT, 4, exec, advs screenshot region                                                                  # chup vung -> file + clipboard
+bind = CTRL SHIFT, 3, exec, advs screenshot region                                                                  # chup vung -> file + clipboard
+bind = CTRL SHIFT, 2, exec, advs screenshot window --no-file                                                        # chup window -> chi clipboard
+bind = SUPER, PRINT, exec, advs screenshot full                                                                     # chup toan man hinh
+bind = CTRL SHIFT, S, exec, advs screenshot region --stdout --no-file --no-notify | swappy -f -                     # chup vung -> annotate
+bind = CTRL SHIFT, 5, exec, advs screenshot scroll                                                                  # chup cuon (anh dai)
+bind = SUPER, Delete, exec, systemctl restart fprintd; advs ipc call lock lock                                       # khoa man hinh
+bind = SUPER, F9, exec, advs ipc call night toggle                                                                   # loc anh sang xanh
+bind = SUPER, F10, exec, advs ipc call theme toggle                                                                  # sang / toi
+bind = SUPER, W, exec, advs ipc call dash toggle wallpaper                                                           # chon wallpaper
+bind = SUPER, F1, exec, advs ipc call hypr toggleBinds                                                                # cheatsheet phim tat
+bind = SUPER, grave, exec, advs ipc call hypr toggleOverview                                                         # xem tat ca workspace
 
 # Resize tiled windows with SUPER + CTRL + Vim keys
 binde = $mainMod CTRL, l, resizeactive, 30 0
