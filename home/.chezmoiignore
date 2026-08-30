@@ -16,9 +16,21 @@ README.md
 dot_config/hypr/monitors.conf
 dot_config/hypr/monitors.conf.old
 
-# DankMaterialShell: settings.json do GUI quản lý, chứa cấu hình màn hình
-# theo từng máy nên không track. State runtime nằm ở ~/.local/state.
-dot_config/DankMaterialShell/settings.json
+# DankMaterialShell: settings.json GIỜ CÓ track (đảo lại quyết định cũ).
+# Lý do cũ là "chứa cấu hình màn hình theo từng máy", nhưng kiểm tra thực tế
+# thì screenPreferences / hyprlandOutputSettings / displayProfiles đều rỗng —
+# per-machine display đang do dot_config/hypr/monitors-*.conf lo.
+# Cái giá: file do GUI ghi lại mỗi lần đổi settings, nên sau khi chỉnh trong
+# DMS phải chạy `chezmoi re-add --source <arch> ~/.config/DankMaterialShell/settings.json`.
+# Nếu sau này thật sự set per-monitor trong DMS thì cân nhắc ignore lại.
 
-# DMS sinh ra khi apply theme (matugen), không portable giữa các máy
+# ── File do máy sinh ra, KHÔNG track ──────────────────────────────────────────
+# matugen/DMS sinh lại từ wallpaper mỗi lần apply theme, không portable:
 dot_config/hypr/dms/
+dot_config/gtk-3.0/dank-colors.css
+dot_config/gtk-4.0/dank-colors.css
+dot_config/qt6ct/colors/
+dot_config/dgop/colors.json
+
+# fcitx5: chỉ track config + profile. Phần dưới là cache/state runtime.
+dot_config/fcitx5/conf/
