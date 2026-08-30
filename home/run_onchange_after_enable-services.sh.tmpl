@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# services version: 4 (role={{ .role }})
+# services version: 5 (role={{ .role }})
 # Toàn bộ service ở đây là của máy Arch desktop -> guard, nếu không thì trên
 # Ubuntu/macOS `sudo systemctl enable sddm` sẽ làm hỏng cả lượt apply.
 {{- if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "arch") (eq .role "desktop") }}
@@ -10,7 +10,6 @@ system_services=(
   NetworkManager.service
   bluetooth.service
   power-profiles-daemon.service
-  sddm.service
 )
 
 for svc in "${system_services[@]}"; do
@@ -18,6 +17,16 @@ for svc in "${system_services[@]}"; do
     sudo systemctl enable --now "$svc" || echo "Warning: failed to enable $svc"
   fi
 done
+
+# ── Display manager: greetd (AriadnevGreeter) ưu tiên, sddm là fallback ──────
+# `advs-greeter install` đã lo enable greetd + disable sddm; ở đây chỉ đảm bảo
+# không bao giờ bật CẢ HAI. sddm vẫn được cài để còn đường lui.
+if systemctl list-unit-files greetd.service &>/dev/null \
+   && grep -q "advs-greeter" /etc/greetd/config.toml 2>/dev/null; then
+  sudo systemctl enable greetd || echo "Warning: failed to enable greetd"
+elif systemctl list-unit-files sddm.service &>/dev/null; then
+  sudo systemctl enable sddm || echo "Warning: failed to enable sddm"
+fi
 
 # ── Snapshot / rollback (snapper + grub-btrfs) ────────────────────────────────
 # Việc dựng subvolume @snapshots và tạo config snapper nằm ở README (mục Rollback)

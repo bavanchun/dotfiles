@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# ariadnev-greeter version: v0.1.0-ariadnev.1
+#
+# Màn hình login greetd + AriadnevGreeter, thay SDDM. Package chưa lên AUR nên
+# build từ PKGBUILD trong repo nguồn (giống 03-install-ariadnev-shell).
+{{- if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "arch") (eq .role "desktop") }}
+set -euo pipefail
+
+if ! pacman -Q advs-greeter &>/dev/null; then
+  echo "==> Build và cài advs-greeter từ PKGBUILD"
+  tmp=$(mktemp -d)
+  trap 'rm -rf "$tmp"' EXIT
+  curl -fsSL https://raw.githubusercontent.com/bavanchun/ariadnev-greeter/main/distro/arch/PKGBUILD \
+    -o "$tmp/PKGBUILD"
+  cd "$tmp"
+  # env -u GOFLAGS: cùng lý do với 03-install-ariadnev-shell.
+  env -u GOFLAGS makepkg -si --noconfirm
+fi
+
+# Idempotent: chạy lại chỉ re-sync theme/permissions. Nó tự disable sddm và
+# enable greetd (đều KHÔNG --now nên không đụng phiên đang chạy).
+advs-greeter install --yes
+{{- else }}
+: # không phải Arch desktop — bỏ qua
+{{- end }}
