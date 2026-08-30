@@ -18,6 +18,7 @@ for svc in "${system_services[@]}"; do
   fi
 done
 
+{{- if eq .shell "ariadnev" }}
 # ── Display manager: greetd (AriadnevGreeter) ưu tiên, sddm là fallback ──────
 # `advs-greeter install` đã lo enable greetd + disable sddm; ở đây chỉ đảm bảo
 # không bao giờ bật CẢ HAI. sddm vẫn được cài để còn đường lui.
@@ -27,6 +28,7 @@ if systemctl list-unit-files greetd.service &>/dev/null \
 elif systemctl list-unit-files sddm.service &>/dev/null; then
   sudo systemctl enable sddm || echo "Warning: failed to enable sddm"
 fi
+{{- end }}
 
 # ── Snapshot / rollback (snapper + grub-btrfs) ────────────────────────────────
 # Việc dựng subvolume @snapshots và tạo config snapper nằm ở README (mục Rollback)
@@ -39,6 +41,7 @@ if [ -d /etc/snapper/configs ] && [ -e /etc/snapper/configs/root ]; then
   done
 fi
 
+{{- if eq .shell "ariadnev" }}
 # ── User services ─────────────────────────────────────────────────────────────
 # AriadnevShell chạy bằng systemd chứ không phải exec-once trong hyprland.conf:
 # unit có Restart=on-failure nên bar tự dựng lại khi quickshell crash.
@@ -58,6 +61,7 @@ fi
 if systemctl --user list-unit-files dunst.service &>/dev/null; then
   systemctl --user mask dunst.service || echo "Warning: failed to mask dunst.service"
 fi
+{{- end }}
 
 echo "Services enabled. (zsh default shell do run_onchange_after_chsh-zsh.sh lo)"
 {{- else }}

@@ -16,13 +16,37 @@ thì không.
 |---|---|---|
 | **cli** | zsh + p10k, nvim, tmux, yazi, git, wezterm/kitty/alacritty/ghostty | mọi máy, mọi OS |
 | **system** | boot, kernel, mạng, snapshot/rollback | mọi máy Arch |
-| **desktop** | Hyprland, DankMaterialShell, xkb remap, fcitx5, font, GPU | chỉ `role=desktop` |
+| **desktop** | Hyprland, shell (AriadnevShell *hoặc* Noctalia), xkb remap, fcitx5, font, GPU | chỉ `role=desktop` |
 
 Tầng được chọn bằng **một biến duy nhất** là `role`, hỏi một lần lúc `chezmoi init`
 (mặc định tự đoán: có Hyprland/Wayland thì `desktop`, không thì `cli`).
 
+### Biến thể shell
+
+Tầng desktop có hai biến thể **loại trừ nhau**, chọn bằng biến `shell`:
+
+| `shell` | Config Hyprland | Shell | Display manager |
+|---|---|---|---|
+| `ariadnev` | `hyprland.conf` (.conf) | AriadnevShell (Quickshell + Go), chạy bằng `advs.service` | greetd + advs-greeter, sddm dự phòng |
+| `noctalia` | `hyprland.lua` (Lua) | Noctalia v5 (gói `extra/noctalia`), chạy bằng `exec_cmd` trong hook `hyprland.start` | (chưa quản lý) |
+
+Không thể cài song song: cả hai cùng giữ bus `org.freedesktop.Notifications`.
+Vì thế `.chezmoiignore` gate từng file theo `shell`, và script `03`/`04`
+(build AriadnevShell + greeter) có thêm guard `eq .shell "ariadnev"` — thiếu guard
+này thì máy Noctalia chạy `chezmoi apply` sẽ bị cài đè AriadnevShell.
+
+> **Lưu ý trên máy `shell=noctalia`:** Noctalia bật `enable_builtin_templates` nên nó
+> tự ghi dòng theme vào `kitty.conf`, `ghostty/config`, `wezterm.lua`
+> (`include themes/noctalia.conf`, `theme = noctalia`, `color_scheme = "Noctalia"`).
+> Source trong repo giữ bảng màu Catppuccin cho máy `ariadnev`, nên `chezmoi status`
+> luôn báo 3 file này lệch. Đây là lệch **lành tính**: `chezmoi apply` ghi lại
+> Catppuccin, rồi `require("noctalia").apply_theme()` trong `hyprland.lua` ghi lại
+> dòng theme ở lần load config kế tiếp.
+
 - `home/.chezmoiignore` là **template** — máy `role=cli` bị ignore hẳn `.config/hypr`,
-  `.config/xkb`, `.config/fcitx5`, `.config/DankMaterialShell`.
+  `.config/xkb`, `.config/fcitx5`, `.config/noctalia`, `.config/DankMaterialShell`.
+  Nhớ rằng nó khớp đường dẫn **đích**: `empty_workspaces.conf` trong source phải
+  được ignore bằng `.config/hypr/workspaces.conf`.
 - `home/.chezmoidata/packages.yaml` chia package theo đúng 3 tầng đó.
 - Mọi `run_onchange_` script đều có guard distro + role, nên chạy trên Ubuntu hay
   macOS không còn làm hỏng lượt apply.
@@ -72,11 +96,11 @@ sudo pacman -S --needed chezmoi git        # Arch
 # sudo apt install -y git && sh -c "$(curl -fsLS get.chezmoi.io)"   # Ubuntu
 # brew install chezmoi git                                          # macOS
 
-# 3. Một lệnh duy nhất cho MỌI máy — chezmoi sẽ hỏi role + terminal
+# 3. Một lệnh duy nhất cho MỌI máy — chezmoi sẽ hỏi role + terminal + shell
 chezmoi init --apply bavanchun/dotfiles
 ```
 
-`role` chỉ hỏi lần đầu (`promptChoiceOnce`); các lần `chezmoi init` sau dùng lại
+`role`, `terminal` và `shell` chỉ hỏi lần đầu (`promptChoiceOnce`); các lần `chezmoi init` sau dùng lại
 giá trị đã lưu trong `~/.config/chezmoi/chezmoi.toml`.
 
 ### Hậu install (chỉ máy desktop)
@@ -259,7 +283,7 @@ plans/                                  # ngoài source
 home/
   .chezmoi.toml.tmpl                    # MỘT file config duy nhất cho mọi máy
   .chezmoidata/packages.yaml            # package chia theo tầng cli/system/desktop
-  .chezmoiignore                        # TEMPLATE — gate tầng desktop theo .role
+  .chezmoiignore                        # TEMPLATE — gate tầng desktop theo .role + .shell
 
   dot_zshrc  dot_p10k.zsh  dot_gitconfig.tmpl  dot_markdownlint-cli2.yaml
   yazi/                                 # nguồn cho symlink ~/.config/yazi

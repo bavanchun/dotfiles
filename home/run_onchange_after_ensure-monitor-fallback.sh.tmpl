@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # machine: {{ .machine }} role={{ .role }}
-# monitors-*.conf chỉ có nghĩa với Hyprland -> chỉ chạy trên máy desktop.
-{{- if eq .role "desktop" }}
+# monitors-*.conf chỉ được source từ hyprland.conf (AriadnevShell). Máy Noctalia
+# khai monitor bằng hl.monitor() trong hyprland.lua nên không cần fallback này.
+{{- if and (eq .role "desktop") (eq .shell "ariadnev") }}
 set -euo pipefail
 
 conf="$HOME/.config/hypr/monitors-{{ .machine }}.conf"
@@ -11,5 +12,5 @@ if [[ ! -f "$conf" ]]; then
   echo "Created fallback monitor config at $conf"
 fi
 {{- else }}
-: # máy cli — không có Hyprland
+: # không phải máy AriadnevShell — bỏ qua
 {{- end }}

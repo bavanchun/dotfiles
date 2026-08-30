@@ -1,0 +1,7 @@
+# Giá trị mặc định cho biến mới, để máy có ~/.config/chezmoi/chezmoi.toml sinh
+# TRƯỚC khi biến ra đời vẫn `chezmoi apply` được thay vì chết vì
+# "map has no entry for key". Mục [data] trong config file luôn thắng file này.
+#
+# `shell` ra đời sau `role`, nên mặc định là biến thể có trước: ariadnev.
+# Máy Noctalia phải chạy `chezmoi init` một lần để ghi shell="noctalia" vào config.
+shell: ariadnev

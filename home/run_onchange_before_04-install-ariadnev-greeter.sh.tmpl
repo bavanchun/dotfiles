@@ -3,7 +3,7 @@
 #
 # Màn hình login greetd + AriadnevGreeter, thay SDDM. Package chưa lên AUR nên
 # build từ PKGBUILD trong repo nguồn (giống 03-install-ariadnev-shell).
-{{- if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "arch") (eq .role "desktop") }}
+{{- if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "arch") (eq .role "desktop") (eq .shell "ariadnev") }}
 set -euo pipefail
 
 if ! pacman -Q advs-greeter &>/dev/null; then
@@ -21,5 +21,5 @@ fi
 # enable greetd (đều KHÔNG --now nên không đụng phiên đang chạy).
 advs-greeter install --yes
 {{- else }}
-: # không phải Arch desktop — bỏ qua
+: # không phải Arch desktop chạy AriadnevShell — bỏ qua
 {{- end }}

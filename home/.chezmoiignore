@@ -35,9 +35,10 @@ yazi/**
 .config/dgop/colors.json
 # nwg-displays sinh:
 .config/hypr/monitors.conf
-# fcitx5: chỉ track config + profile, phần dưới là cache runtime:
-.config/fcitx5/conf
-.config/fcitx5/conf/**
+# fcitx5: track config + profile + conf/bamboo.conf (kiểu gõ Telex, spell check);
+# phần còn lại trong conf/ là cache runtime do fcitx5 tự sinh.
+.config/fcitx5/conf/*
+!.config/fcitx5/conf/bamboo.conf
 
 {{/* ── Tầng desktop: máy role=cli hoặc không phải Linux thì bỏ qua hẳn ───── */}}
 {{- if or (ne .role "desktop") (ne .chezmoi.os "linux") }}
@@ -49,4 +50,28 @@ yazi/**
 .config/fcitx5/**
 .config/DankMaterialShell
 .config/DankMaterialShell/**
+.config/noctalia
+.config/noctalia/**
+{{- end }}
+
+{{/* ── Biến thể shell: hai bộ config Hyprland loại trừ nhau ─────────────────
+     AriadnevShell đọc hyprland.conf, Noctalia đọc hyprland.lua. Để cả hai rơi
+     vào ~/.config/hypr thì Hyprland có hai file config cạnh nhau — mơ hồ và dễ
+     hỏng, nên mỗi máy chỉ nhận đúng bộ của shell mình. */}}
+{{- if ne .shell "noctalia" }}
+.config/hypr/hyprland.lua
+.config/hypr/noctalia.lua
+.config/noctalia
+.config/noctalia/**
+{{- end }}
+{{- if ne .shell "ariadnev" }}
+.config/hypr/hyprland.conf
+.config/hypr/workspaces.conf
+.config/hypr/scripts
+.config/hypr/scripts/**
+.config/DankMaterialShell
+.config/DankMaterialShell/**
+# monitors-*.conf chỉ được `source` từ hyprland.conf; hyprland.lua khai monitor
+# trực tiếp bằng hl.monitor() nên file này thừa trên máy Noctalia.
+.config/hypr/monitors-*.conf
 {{- end }}

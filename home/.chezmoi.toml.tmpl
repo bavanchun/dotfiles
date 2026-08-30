@@ -18,10 +18,22 @@
 {{- $role := promptChoiceOnce . "role" "Vai trò máy" (list "desktop" "cli") $guess -}}
 {{- $terminal := promptChoiceOnce . "terminal" "Terminal chính" (list "wezterm" "kitty" "alacritty" "ghostty" "none") "wezterm" -}}
 
+{{- /* Tầng desktop có HAI biến thể shell không đội trời chung: AriadnevShell dùng
+       hyprland.conf + quickshell, Noctalia dùng hyprland.lua + binary riêng. Cả hai
+       cùng giữ bus org.freedesktop.Notifications nên không thể cài song song.
+       Biến này vô nghĩa khi role=cli, nhưng vẫn hỏi để máy nâng cấp lên desktop
+       sau này không phải sửa tay chezmoi.toml. */ -}}
+{{- $shellGuess := "ariadnev" -}}
+{{- if stat "/usr/bin/noctalia" -}}
+{{-   $shellGuess = "noctalia" -}}
+{{- end -}}
+{{- $shell := promptChoiceOnce . "shell" "Shell desktop" (list "ariadnev" "noctalia") $shellGuess -}}
+
 [data]
   machine  = {{ .chezmoi.hostname | quote }}
   role     = {{ $role | quote }}
   terminal = {{ $terminal | quote }}
+  shell    = {{ $shell | quote }}
 
 [git]
   autoCommit = false

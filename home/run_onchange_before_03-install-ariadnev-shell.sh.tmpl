@@ -3,7 +3,7 @@
 #
 # AriadnevShell chưa lên AUR/repo chính thức nên không đặt được vào
 # packages.yaml — build thẳng từ PKGBUILD trong repo nguồn.
-{{- if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "arch") (eq .role "desktop") }}
+{{- if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "arch") (eq .role "desktop") (eq .shell "ariadnev") }}
 set -euo pipefail
 
 if pacman -Q ariadnev-shell &>/dev/null; then
@@ -23,5 +23,5 @@ cd "$tmp"
 # chết với: parsing $GOFLAGS: unknown flag -w"
 env -u GOFLAGS makepkg -si --noconfirm
 {{- else }}
-: # không phải Arch desktop — bỏ qua
+: # không phải Arch desktop chạy AriadnevShell — bỏ qua
 {{- end }}

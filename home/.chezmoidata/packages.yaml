@@ -68,25 +68,15 @@ packages:
       - inotify-tools
 
   desktop:
+    # Gói chung cho MỌI máy desktop, bất kể shell nào.
     pacman:
       # Hyprland. hyprlock/hypridle/hyprpolkitagent/hyprsunset/hyprpaper đã bỏ:
-      # DMS lo lock screen, idle/sleep, polkit agent, night mode và wallpaper.
+      # cả hai shell đều tự lo lock screen, idle/sleep, polkit agent, night mode
+      # và wallpaper.
       - hyprland
       - xdg-desktop-portal-hyprland
       - uwsm
-      - sddm
-      # Shell: AriadnevShell (thay waybar + rofi + fuzzel + swaync + wlogout).
-      # Chính gói ariadnev-shell KHÔNG có ở đây vì nó chưa lên AUR/repo —
-      # run_onchange_before_03-install-ariadnev-shell.sh build từ PKGBUILD.
-      # Dưới đây là runtime dependency của nó (trước do dms-shell-hyprland kéo).
-      - quickshell
-      - dgop
-      - accountsservice
-      - matugen              # DMS dùng để sinh theme Material You từ wallpaper
-      - cava                 # audio visualizer trong DMS
-      - wtype                # DMS paste từ lịch sử clipboard
-      - kimageformats        # thêm định dạng ảnh cho wallpaper
-      - qt6ct                # để DMS theme được app Qt
+      - qt6ct                # để shell theme được app Qt
       # Đồ hoạ: laptop lai AMD Picasso iGPU (amdgpu) + NVIDIA GTX 1650 (nouveau).
       # SDDM chạy trên X11 nên vẫn cần DDX driver.
       - xorg-server
@@ -127,8 +117,28 @@ packages:
       # Theming
       - papirus-icon-theme
       - adw-gtk-theme        # thay adw-gtk3 (AUR cũ đã bị xoá, nay có trong extra)
+    # ── Biến thể shell ────────────────────────────────────────────────────────
+    # Chọn bằng biến `shell` (xem .chezmoi.toml.tmpl). Chỉ MỘT nhóm được cài.
+    ariadnev:
+      pacman:
+        # Chính gói ariadnev-shell KHÔNG có ở đây vì nó chưa lên AUR/repo —
+        # run_onchange_before_03-install-ariadnev-shell.sh build từ PKGBUILD.
+        # Dưới đây là runtime dependency của nó (trước do dms-shell-hyprland kéo).
+        - quickshell
+        - dgop
+        - accountsservice
+        - matugen            # sinh theme Material You từ wallpaper
+        - cava               # audio visualizer
+        - wtype              # paste từ lịch sử clipboard
+        - kimageformats      # thêm định dạng ảnh cho wallpaper
+        - sddm               # display manager dự phòng; advs-greeter thay bằng greetd
+    noctalia:
+      pacman:
+        # Noctalia v5 nằm sẵn trong repo `extra`, là binary tự chứa: không cần
+        # quickshell/dgop/matugen/cava rời như AriadnevShell.
+        - noctalia
     aur:
-      # awww / wlogout / hyprshot / kde-material-you-colors đã bỏ: DMS lo hết.
+      # awww / wlogout / hyprshot / kde-material-you-colors đã bỏ: shell lo hết.
       # Đã gỡ 3 gói AUR không còn tồn tại (kiểm tra qua AUR RPC 2026-08-29):
       #   adw-gtk3 -> extra/adw-gtk-theme; ttf-google-sans-flex và
       #   wezterm-cursor-trail không còn gói thay thế.

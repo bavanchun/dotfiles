@@ -4,7 +4,7 @@
 # Cài package theo TẦNG (xem .chezmoidata/packages.yaml):
 #   cli     -> mọi máy
 #   system  -> mọi máy Arch (boot/kernel/mạng/snapshot)
-#   desktop -> chỉ role=desktop
+#   desktop -> chỉ role=desktop; nhóm desktop.<shell> chọn theo biến `shell`
 set -euo pipefail
 
 {{ if eq .chezmoi.os "linux" -}}
@@ -21,6 +21,9 @@ pacman_pkgs=(
 {{-     end }}
 {{-     if eq .role "desktop" }}
 {{-       range .packages.desktop.pacman }}
+  {{ . | quote }}
+{{-       end }}
+{{-       range (index .packages.desktop .shell).pacman }}
   {{ . | quote }}
 {{-       end }}
 {{-     end }}
