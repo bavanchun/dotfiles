@@ -232,7 +232,9 @@ input {
     kb_layout = us
     kb_variant =
     kb_model =
-    kb_options =
+    # Caps Lock -> Ctrl trái: ctrl:nocaps là option xkb có sẵn.
+    # Alt phải  -> Escape:    custom:ralt_esc, định nghĩa ở ~/.config/xkb.
+    kb_options = ctrl:nocaps,custom:ralt_esc
     kb_rules =
 
     follow_mouse = 1

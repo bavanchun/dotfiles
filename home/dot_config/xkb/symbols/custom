@@ -1,0 +1,15 @@
+// Custom xkb symbols — dùng kèm option "custom:*" khai báo ở rules/evdev.
+// libxkbcommon >= 1.0 tự tìm $XDG_CONFIG_HOME/xkb trước khi tìm /usr/share/X11/xkb,
+// nên file này không cần quyền root và đi theo dotfiles được.
+
+// Alt phải -> Escape.
+// Đặt symbols thành Escape làm keysym Alt_R biến mất khỏi phím này, nên
+// "modifier_map Mod1 { Alt_L, Alt_R, Meta_L }" của symbols/pc không còn khớp
+// -> phím thôi hẳn vai trò modifier, không cần gỡ modmap thủ công.
+partial modifier_keys
+xkb_symbols "ralt_esc" {
+    key <RALT> {
+        type[Group1] = "ONE_LEVEL",
+        symbols[Group1] = [ Escape ]
+    };
+};

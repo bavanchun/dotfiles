@@ -1,0 +1,7 @@
+// Rules cấp user: khai báo các option "custom:*" rồi include rules hệ thống.
+// Thứ tự này là bắt buộc — phần khai báo phải đứng trước "! include".
+
+! option = symbols
+  custom:ralt_esc = +custom(ralt_esc)
+
+! include %S/evdev
