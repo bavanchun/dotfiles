@@ -44,7 +44,7 @@ if systemctl --user list-unit-files dunst.service &>/dev/null; then
   systemctl --user mask dunst.service || echo "Warning: failed to mask dunst.service"
 fi
 
-echo "Services enabled. (zsh default shell is handled by dotconfig-term repo)"
+echo "Services enabled. (zsh default shell do run_onchange_after_chsh-zsh.sh lo)"
 {{- else }}
 : # không phải Arch desktop — bỏ qua
 {{- end }}
