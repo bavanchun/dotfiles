@@ -200,3 +200,9 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 # Added by Antigravity IDE
 export PATH="/Users/vchun/.antigravity-ide/antigravity-ide/bin:$PATH"
+
+# Bổ sung riêng từng máy: file này KHÔNG được track, không đồng bộ giữa các máy.
+# Dùng cho PATH/env do trình cài tự chèn (uv, rye, sdkman...) hoặc thứ chỉ đúng
+# với một máy. Nhờ nó mà dot_zshrc dùng chung được cho mọi máy, kể cả máy
+# Omarchy kéo file này về qua .chezmoiexternal.
+[[ -r "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
