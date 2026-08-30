@@ -420,6 +420,15 @@ windowrule {
     move = 20 monitor_h-120
 }
 
+# Cửa sổ của AriadnevShell (settings, popup...) luôn floating.
+# ADVS chỉ tự ghi rule này khi dùng hyprland.lua; với .conf phải khai báo tay.
+windowrule {
+    name = advs-floating-windows
+    match:class = ^dev.vchun.ariadnev$
+
+    float = true
+}
+
 # Cheatsheet floating window
 windowrule {
     name = cheatsheet-float

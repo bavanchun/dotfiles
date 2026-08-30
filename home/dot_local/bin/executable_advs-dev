@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Chạy AriadnevShell từ source (~/dev/ariadnev-shell) với hot reload QML.
+# Dừng shell production đang chạy, build Go core (make dev) rồi launch với -c quickshell/.
+# Ctrl+C để thoát; chạy `advs-dev --restore` để quay lại shell production.
+set -euo pipefail
+REPO="${ADVS_REPO:-$HOME/dev/ariadnev-shell}"
+
+stop_running() {
+    systemctl --user stop advs.service 2>/dev/null || true
+    pkill -x advs 2>/dev/null || true
+    pkill -f 'qs -p .*ariadnev' 2>/dev/null || true
+    sleep 0.5
+}
+
+if [[ "${1:-}" == "--restore" ]]; then
+    stop_running
+    exec setsid -f advs run >/dev/null 2>&1
+fi
+
+cd "$REPO"
+stop_running
+unset ADVS_DISABLE_HOT_RELOAD
+exec make run
