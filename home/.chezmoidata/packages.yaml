@@ -75,9 +75,13 @@ packages:
       - xdg-desktop-portal-hyprland
       - uwsm
       - sddm
-      # Shell: DankMaterialShell (thay waybar + rofi + fuzzel + swaync + wlogout).
-      # dms-shell-hyprland kéo theo dms-shell, quickshell, dgop, accountsservice.
-      - dms-shell-hyprland
+      # Shell: AriadnevShell (thay waybar + rofi + fuzzel + swaync + wlogout).
+      # Chính gói ariadnev-shell KHÔNG có ở đây vì nó chưa lên AUR/repo —
+      # run_onchange_before_03-install-ariadnev-shell.sh build từ PKGBUILD.
+      # Dưới đây là runtime dependency của nó (trước do dms-shell-hyprland kéo).
+      - quickshell
+      - dgop
+      - accountsservice
       - matugen              # DMS dùng để sinh theme Material You từ wallpaper
       - cava                 # audio visualizer trong DMS
       - wtype                # DMS paste từ lịch sử clipboard

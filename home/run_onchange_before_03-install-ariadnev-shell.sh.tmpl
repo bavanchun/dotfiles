@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# ariadnev-shell version: v1.6.0-ariadnev.1
+#
+# AriadnevShell chưa lên AUR/repo chính thức nên không đặt được vào
+# packages.yaml — build thẳng từ PKGBUILD trong repo nguồn.
+{{- if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "arch") (eq .role "desktop") }}
+set -euo pipefail
+
+if pacman -Q ariadnev-shell &>/dev/null; then
+  exit 0
+fi
+
+echo "==> Build và cài ariadnev-shell từ PKGBUILD"
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+curl -fsSL https://raw.githubusercontent.com/bavanchun/ariadnev-shell/main/distro/arch/PKGBUILD \
+  -o "$tmp/PKGBUILD"
+cd "$tmp"
+
+# GOFLAGS phải được GỠ khỏi môi trường, không chỉ là không đặt: core/Makefile
+# khai báo GOFLAGS=-ldflags="-s -w" như biến make, nên nếu GOFLAGS có sẵn trong
+# env thì make xuất lại giá trị đó KÈM dấu nháy cho tiến trình go con và go
+# chết với: parsing $GOFLAGS: unknown flag -w"
+env -u GOFLAGS makepkg -si --noconfirm
+{{- else }}
+: # không phải Arch desktop — bỏ qua
+{{- end }}
