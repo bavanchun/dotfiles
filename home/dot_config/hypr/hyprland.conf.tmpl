@@ -46,10 +46,14 @@ $menu = advs ipc call spotlight toggle
 # Autostart necessary processes (like notifications daemons, status bars, etc.)
 # Or execute your favorite apps at launch like this:
 
-# DankMaterialShell thay cho waybar + swaync + rofi + wlogout + hyprlock +
+# AriadnevShell (fork DMS) thay cho waybar + swaync + rofi + wlogout + hyprlock +
 # hypridle + hyprpolkitagent + nm-applet + awww + cliphist.
-# Shell chạy bằng systemd user service (advs.service), không dùng exec-once
-# exec-once = advs run
+#
+# Chạy bằng exec-once (kiểu "native" như caelestia/end-4) thay vì advs.service:
+# exec-once chạy ngay khi Hyprland đọc config, còn advs.service phải đợi
+# uwsm -> waitenv -> graphical-session.target, chậm hơn ~1s. advs.service đã disable.
+# Session chọn ở greeter: "Hyprland" (KHÔNG phải "Hyprland (uwsm-managed)").
+exec-once = advs run
 exec-once = fcitx5 -d
 exec-once = bash ~/.config/hypr/scripts/bluetooth-audio.sh
 exec-once = hyprswitch init
