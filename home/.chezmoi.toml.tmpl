@@ -11,7 +11,11 @@
 
 {{- /* promptChoiceOnce chứ không phải promptChoice: chỉ hỏi lần đầu, các lần
        `chezmoi init` sau sẽ dùng lại giá trị đã lưu trong config. */ -}}
-{{- $role := promptChoiceOnce . "role" "Vai trò máy này (desktop = có compositor; cli = server/WSL/container)" (list "desktop" "cli") $guess -}}
+{{- /* Chuỗi prompt phải NGẮN và không chứa dấu phẩy hay "=", vì cờ
+       --promptChoice khớp theo chính chuỗi prompt chứ không phải tên biến:
+         chezmoi init --promptChoice "Vai trò máy=cli" ...
+       Hoặc dùng --promptDefaults để lấy giá trị mặc định (role tự đoán). */ -}}
+{{- $role := promptChoiceOnce . "role" "Vai trò máy" (list "desktop" "cli") $guess -}}
 {{- $terminal := promptChoiceOnce . "terminal" "Terminal chính" (list "wezterm" "kitty" "alacritty" "ghostty" "none") "wezterm" -}}
 
 [data]
