@@ -32,6 +32,7 @@ hypridle, hyprpolkitagent, nm-applet, awww, cliphist, flameshot, hyprshot**.
 - [Theming](#theming)
 - [Per-machine Configuration](#per-machine-configuration)
 - [Repository Structure](#repository-structure)
+- [Snapshot & Rollback](#snapshot--rollback)
 - [Daily Workflow](#daily-workflow)
 - [Troubleshooting](#troubleshooting)
 
@@ -274,6 +275,17 @@ dot_config/hypr/
   empty_workspaces.conf
   scripts/executable_bluetooth-audio.sh # auto switch sink sang bluetooth
 
+dot_config/xkb/                         # remap phím cấp user (không cần root)
+  rules/evdev                           # khai báo option custom:* rồi include rules hệ thống
+  symbols/custom                        # Alt phải -> Escape
+
+dot_config/fcitx5/                      # gõ tiếng Việt (bamboo), trigger Alt+space
+  config
+  profile
+
+dot_config/DankMaterialShell/
+  settings.json                         # layout bar + toàn bộ setting DMS
+
 run_onchange_before_01-install-yay.sh
 run_onchange_before_02-install-packages.sh.tmpl
 run_onchange_after_enable-services.sh
@@ -290,6 +302,79 @@ run_onchange_after_ensure-monitor-fallback.sh.tmpl
 | `run_once_` | chạy đúng một lần |
 | `run_onchange_` | chạy lại khi nội dung script đổi |
 | `before_` / `after_` | chạy trước / sau khi apply dotfiles |
+
+---
+
+## Snapshot & Rollback
+
+Repo này là **công thức dựng lại**, không phải rollback. Cài lại máy thì
+`chezmoi apply` ra một máy giống — nhưng nếu một bản update làm hỏng hệ thống
+thì repo vô dụng, vì file config có sai đâu, cái sai là phiên bản package.
+
+Phần rollback thật do **snapper + snap-pac + grub-btrfs** lo, chạy trên btrfs.
+
+### Điều kiện
+
+Root phải là btrfs theo layout subvolume `@` (layout mặc định của archinstall):
+
+```bash
+findmnt -no FSTYPE,SOURCE /     # mong đợi: btrfs /dev/sdX2[/@]
+```
+
+### Dựng lần đầu (một lần cho mỗi máy)
+
+Đụng tới `/etc/fstab` nên không tự động hoá trong `run_onchange_`; làm tay:
+
+```bash
+sudo pacman -S --needed snapper snap-pac grub-btrfs inotify-tools
+
+# snapper create-config tạo /.snapshots dạng subvolume lồng trong @.
+# Ta thay bằng subvolume @snapshots riêng ở top-level cho khớp layout @/@home/@log/@pkg,
+# để sau này thay nguyên @ mà không kéo theo đống snapshot.
+sudo snapper -c root create-config /
+sudo btrfs subvolume delete /.snapshots
+sudo mkdir -p /.snapshots
+
+DEV=$(findmnt -no SOURCE / | sed 's/\[.*//')
+UUID=$(blkid -s UUID -o value "$DEV")
+sudo mount -o subvolid=5 "$DEV" /mnt
+sudo btrfs subvolume create /mnt/@snapshots
+sudo umount /mnt
+echo "UUID=$UUID /.snapshots btrfs rw,relatime,compress=zstd:3,ssd,discard=async,space_cache=v2,subvol=/@snapshots 0 0" | sudo tee -a /etc/fstab
+sudo mount -a
+sudo chmod 750 /.snapshots
+
+sudo systemctl enable --now snapper-timeline.timer snapper-cleanup.timer grub-btrfsd.service
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+Sau bước này `run_onchange_after_enable-services.sh` sẽ tự giữ các timer bật ở
+những lần apply sau (nó kiểm tra `/etc/snapper/configs/root` có tồn tại không).
+
+### Dùng hàng ngày
+
+| Việc | Lệnh |
+|---|---|
+| Xem snapshot | `sudo snapper -c root list` |
+| Snapshot thủ công trước khi vọc | `sudo snapper -c root create -d "truoc khi doi X"` |
+| Xem một file đổi gì giữa 2 snapshot | `sudo snapper -c root diff 42..0 /etc/foo.conf` |
+| Khôi phục vài file (không rollback cả máy) | `sudo snapper -c root undochange 42..0 /etc/foo.conf` |
+| Rollback cả hệ thống | Reboot → menu GRUB → *Arch Linux snapshots* → chọn snapshot |
+
+`snap-pac` tự tạo cặp snapshot pre/post quanh **mỗi** transaction pacman, nên
+"update xong hỏng" luôn có điểm quay về ngay trước transaction đó.
+
+### Giới hạn cần biết
+
+- **`/boot` là ESP (vfat), nằm ngoài btrfs** → kernel và initramfs KHÔNG nằm
+  trong snapshot. Boot vào snapshot cũ vẫn dùng kernel hiện tại, nên nếu
+  snapshot cũ hơn một lần nâng kernel thì `/usr/lib/modules/<kernel hiện tại>`
+  không tồn tại trong đó → thiếu module. Rollback ăn chắc nhất là snapshot
+  `pre` của chính transaction vừa làm hỏng máy (cùng đời kernel).
+- **Snapshot không phải backup.** Nó nằm cùng ổ `/dev/sda2`. Ổ chết là mất sạch.
+  Muốn an toàn thật thì cần backup ra ngoài (`btrfs send/receive`, restic...).
+- Chỉ subvolume `@` (root) được snapshot. `@home` chưa có config snapper —
+  thêm bằng `sudo snapper -c home create-config /home` nếu cần.
 
 ---
 

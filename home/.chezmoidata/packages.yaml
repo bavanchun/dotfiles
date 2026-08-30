@@ -53,6 +53,9 @@ packages:
     - fcitx5-gtk
     - fcitx5-qt
     # Fonts
+    # DMS settings.json đặt fontFamily="Inter Variable", monoFontFamily="Fira Code"
+    - inter-font
+    - ttf-fira-code
     - ttf-jetbrains-mono-nerd
     - noto-fonts
     - noto-fonts-cjk
@@ -60,6 +63,38 @@ packages:
     # Theming
     - papirus-icon-theme
     - adw-gtk-theme         # thay adw-gtk3 (AUR cu da bi xoa, nay co trong extra)
+    # Boot & hệ thống nền — thiếu nhóm này thì máy cài lại không boot được
+    - grub
+    - efibootmgr
+    - sddm
+    - amd-ucode
+    - zram-generator
+    - linux
+    - linux-firmware
+    - btrfs-progs
+    # Đồ hoạ lai: AMD Picasso iGPU (amdgpu) + NVIDIA GTX 1650 Mobile (nouveau).
+    # SDDM đang chạy trên X11 (có tiến trình Xorg) nên vẫn cần DDX driver.
+    # xf86-video-ati là rác archinstall để lại (dành cho Radeon đời pre-GCN) -> không track.
+    - xorg-server
+    - xf86-video-amdgpu
+    - xf86-video-nouveau
+    - mesa
+    - vulkan-radeon
+    # Snapshot / rollback (xem README mục Rollback)
+    - snapper
+    - snap-pac
+    - grub-btrfs
+    - inotify-tools
+    # Công cụ
+    - chezmoi
+    - github-cli
+    - htop
+    - wget
+    - nano
+    - dolphin
+    - ghostty
+    - uwsm
+
   aur:
     # awww / wlogout / hyprshot / kde-material-you-colors đã bỏ:
     # DMS lo wallpaper, power menu, screenshot và màu KDE (kcolorscheme).
@@ -70,3 +105,4 @@ packages:
     #   wezterm-cursor-trail -> không còn, dùng extra/wezterm thường
     - hyprswitch                        # alt-tab, DMS không thay thế
     - ttf-material-symbols-variable-git
+    - google-chrome
