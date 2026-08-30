@@ -1,0 +1,39 @@
+# ─────────────────────────────────────────────────────────────
+# Noctalia v5 — Theming & Location
+# Docs: https://docs.noctalia.dev/noctalia/theming/
+# ─────────────────────────────────────────────────────────────
+
+[theme]
+# Màu sinh động lấy từ wallpaper (đặc trưng của Noctalia).
+# Đổi wallpaper -> shell + GTK/Qt/kitty/btop đổi màu theo.
+source           = "wallpaper"
+wallpaper_scheme = "m3-content"   # m3-tonal-spot | m3-content | m3-fruit-salad |
+                                  # m3-rainbow | m3-monochrome | vibrant |
+                                  # faithful | soft | dysfunctional | muted
+mode             = "dark"         # dark | light | auto (auto theo sunrise/sunset)
+pure_black_dark  = false
+
+# Dùng khi source = "builtin":
+builtin          = "Noctalia"     # Ayu | Catppuccin | Dracula | Eldritch | Gruvbox |
+                                  # Kanagawa | Noctalia | Nord | Rosé Pine | Tokyo-Night
+
+[location]
+# Cần cho Weather, Night Light và theme mode = "auto".
+auto_locate     = true            # dò toạ độ qua IP (đi qua noctalia.dev)
+address         = ""              # hoặc điền "Ho Chi Minh City, VN" và đặt auto_locate = false
+custom_schedule = false
+
+# ── Theme templates: inject palette vào app khác ────────────
+# Docs: https://docs.noctalia.dev/noctalia/theming/templates/
+# Mỗi lần đổi wallpaper/palette, Noctalia render lại các file này.
+[theme.templates]
+enable_builtin_templates  = true
+enable_community_templates = false
+builtin_ids = [
+  "gtk3",         # ~/.config/gtk-3.0/noctalia.css
+  "gtk4",         # ~/.config/gtk-4.0/noctalia.css
+  "qt",           # ~/.config/qt5ct|qt6ct/colors/noctalia.conf
+  "kcolorscheme", # ~/.local/share/color-schemes/noctalia.colors  (Dolphin & app KDE)
+  "kitty",        # ~/.config/kitty/themes/noctalia.conf
+  "hyprland",     # màu viền cửa sổ Hyprland
+]

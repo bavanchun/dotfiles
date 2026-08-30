@@ -1,0 +1,89 @@
+# ─────────────────────────────────────────────────────────────
+# Noctalia v5 — Bar
+# Docs: https://docs.noctalia.dev/noctalia/bar/
+# ─────────────────────────────────────────────────────────────
+
+[bar.default]
+position                 = "top"
+enabled                  = true
+layer                    = "top"
+reserve_space            = true
+auto_hide                = false
+smart_auto_hide          = false
+show_on_workspace_switch = true
+
+# Kích thước / khoảng cách (laptop 1080p)
+thickness            = 34
+margin_ends          = 8
+margin_edge          = 6
+margin_opposite_edge = 0
+padding              = 12
+widget_spacing       = 6
+
+# Hình thức
+background_opacity   = 0.92
+border               = "outline"
+border_width         = 1.0
+shadow               = true
+contact_shadow       = false
+panel_overlap        = 1
+radius               = 14
+concave_edge_corners = true
+hover_highlight      = true
+
+# Chữ
+scale        = 1.0
+font_scale   = 1.0
+font_weight  = 500
+font_family  = ""
+
+# Capsule mặc định cho widget (tắt ở mức bar, bật theo nhóm bên dưới)
+capsule           = false
+capsule_fill      = "surface_variant"
+capsule_thickness = 0.76
+capsule_radius    = 8.0
+capsule_opacity   = 1.0
+
+# Bố cục widget
+start  = ["launcher", "workspaces", "active_window"]
+center = ["media", "clock", "weather"]
+end    = ["tray", "notifications", "clipboard", "screenshot",
+          "group:system", "power_profile", "control-center", "session"]
+
+# Gom nhóm chỉ báo hệ thống thành 1 capsule
+[[bar.default.capsule_group]]
+id             = "system"
+members        = ["network", "bluetooth", "volume", "brightness", "battery"]
+enabled        = true
+fill           = "surface_variant"
+border         = "outline"
+padding        = 6
+radius         = 10.0
+opacity        = 1.0
+accordion      = false
+widget_spacing = 8
+
+# Dead zone: vùng trống trên bar
+[bar.default.dead_zone.actions]
+left        = "panel-toggle launcher"
+middle      = "panel-toggle control-center"
+scroll_up   = "volume-up"
+scroll_down = "volume-down"
+
+# ── Cấu hình từng widget ────────────────────────────────────
+[widget.clock]
+interactive = true
+
+[widget.battery]
+interactive = true
+
+[widget.volume]
+interactive   = true
+scroll_repeat = "auto"
+
+[widget.brightness]
+interactive   = true
+scroll_repeat = "auto"
+
+[widget.active_window]
+scale = 1.0

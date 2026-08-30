@@ -1,0 +1,115 @@
+# ─────────────────────────────────────────────────────────────
+# Noctalia v5 — Shell core
+# Docs: https://docs.noctalia.dev/noctalia/configuration/shell/
+# ─────────────────────────────────────────────────────────────
+
+[storage]
+# Clipboard history được mã hoá bằng khoá lấy từ Secret Service (kwallet/gnome-keyring).
+key_source = "secret-service"
+
+[shell]
+font_family          = "Inter"
+lang                 = ""
+time_format          = "{:%H:%M}"
+date_format          = "%A, %d/%m/%Y"
+
+corner_radius_scale  = 1.0
+button_borders       = true
+input_borders        = true
+popup_borders        = true
+card_borders         = true
+popup_shadows        = true
+
+# Noctalia tự làm polkit agent -> không cần hyprpolkitagent/polkit-gnome
+polkit_agent         = true
+
+offline_mode         = false
+external_ip_enabled  = false
+telemetry_enabled    = false
+setup_wizard_enabled = false
+settings_show_advanced = true
+show_location        = true
+screen_time_enabled  = false
+
+# Clipboard manager tích hợp (thay cliphist + wl-clipboard)
+clipboard_enabled                = true
+clipboard_keep_from_closed_apps  = true
+clipboard_history_max_entries    = 200
+clipboard_confirm_clear_history  = true
+clipboard_auto_paste             = "auto"
+
+# Laptop 1 GPU render path: bật shared GL context cho nhẹ RAM/VRAM
+shared_gl_context    = true
+disable_mipmaps      = false
+
+[shell.animation]
+enabled = true
+speed   = 1.0
+
+[shell.shadow]
+direction = "down"
+alpha     = 0.55
+
+[shell.panel]
+transparency_mode        = "glass"
+borders                  = true
+shadow                   = true
+floating_layer           = "overlay"
+launcher_placement       = "floating"
+launcher_position        = "center"
+clipboard_placement      = "floating"
+clipboard_position       = "center"
+polkit_placement         = "floating"
+polkit_position          = "center"
+control_center_placement = "attached"
+wallpaper_placement      = "attached"
+session_placement        = "attached"
+floating_offset          = 8
+
+[shell.launcher]
+categories                = true
+show_icons                = true
+show_app_origin_indicator = true
+compact                   = false
+app_grid                  = false
+show_app_actions          = true
+sort_by_usage             = true
+provider_prefix           = "/"
+auto_paste                = "auto"
+pinned                    = []
+
+[shell.launcher.providers.calculator]
+prefix = "calc"
+global = true
+
+[shell.launcher.providers.emoji]
+prefix = "emo"
+
+[shell.launcher.providers.windows]
+prefix = "win"
+
+[shell.launcher.providers.wallpaper]
+prefix = "wall"
+
+[shell.launcher.providers.session]
+prefix = "session"
+global = false
+
+[shell.screenshot]
+save_to_file       = true
+directory          = ""
+copy_to_clipboard  = true
+freeze_screen      = true
+show_cursor        = false
+remember_last_region = true
+
+[shell.session]
+grid            = false
+show_shortcuts  = true
+
+[accessibility]
+ui_scale      = 1.0
+high_contrast = false
+
+[hot_corners]
+enabled = false

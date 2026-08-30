@@ -1,0 +1,107 @@
+# ─────────────────────────────────────────────────────────────
+# Noctalia v5 — Wallpaper / Notifications / OSD / Idle / Lockscreen
+# ─────────────────────────────────────────────────────────────
+
+# ── Wallpaper ───────────────────────────────────────────────
+# Docs: https://docs.noctalia.dev/noctalia/desktop/wallpaper/
+[wallpaper]
+enabled               = true
+fill_mode             = "crop"
+directory             = "/home/vchun/Pictures/Wallpapers"
+transition            = ["fade", "wipe", "disc", "zoom"]
+transition_duration   = 1500
+edge_smoothness       = 0.3
+transition_on_startup = false
+
+# [wallpaper.default] do lớp GUI (~/.local/state/noctalia/settings.toml) quản lý.
+# Đổi bằng: noctalia msg wallpaper-set <path>   hoặc SUPER+W
+
+[wallpaper.automation]
+enabled          = false      # bật -> tự đổi wallpaper (và đổi cả palette)
+interval_seconds = 1800
+order            = "random"
+recursive        = true
+
+# ── Notifications (thay dunst) ──────────────────────────────
+# Docs: https://docs.noctalia.dev/noctalia/services/notifications/
+[notification]
+enable_daemon           = true
+show_app_name           = true
+show_actions            = true
+position                = "top_right"
+layer                   = "top"
+scale                   = 1.0
+background_opacity      = 0.97
+border                  = true
+offset_x                = 20
+offset_y                = 8
+collapse_on_dismiss     = true
+max_visible             = 4
+history_retention_hours = 72
+monitors                = []
+
+# ── OSD (volume / brightness / wifi ...) ────────────────────
+[osd]
+position           = "bottom_center"
+orientation        = "horizontal"
+scale              = 1.0
+background_opacity = 0.97
+border             = true
+offset_x           = 20
+offset_y           = 40
+monitors           = []
+
+[osd.kinds]
+volume             = true
+volume_output      = true
+volume_input       = true
+brightness         = true
+wifi               = true
+bluetooth          = true
+power_profile      = true
+caffeine           = true
+nightlight         = true
+dnd                = true
+lock_keys          = true
+keyboard_layout    = true
+media              = true
+privacy            = true
+keyboard_backlight = true
+
+# ── Lockscreen ──────────────────────────────────────────────
+[lockscreen]
+enabled              = true
+lock_before_suspend  = true
+fingerprint          = true
+allow_empty_password = false
+blurred_desktop      = true
+blur_intensity       = 0.5
+tint_intensity       = 0.3
+monitors             = []
+
+# ── Idle (thay hypridle) ────────────────────────────────────
+# Docs: https://docs.noctalia.dev/noctalia/services/idle/
+[idle]
+behavior_order          = ["lock", "screen-off", "suspend"]
+pre_action_fade_seconds = 2.0
+
+[idle.behavior.lock]
+action  = "lock"
+enabled = true
+timeout = 600      # 10 phút -> khoá màn hình
+
+[idle.behavior.screen-off]
+action  = "screen_off"
+enabled = true
+timeout = 720      # 12 phút -> tắt màn hình
+
+[idle.behavior.suspend]
+action              = "lock_and_suspend"
+enabled             = true
+timeout             = 1800   # 30 phút -> suspend
+lock_before_suspend = true
+
+# ── Screen corners (bo góc màn hình) ────────────────────────
+[shell.screen_corners]
+enabled = true
+size    = 16
