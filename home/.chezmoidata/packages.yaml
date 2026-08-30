@@ -1,33 +1,133 @@
+# Package chia theo TẦNG, không theo distro.
+#
+#   cli     — mọi máy, mọi OS. Máy nào cũng cài.
+#   system  — nền của một máy Arch: boot, kernel, mạng, snapshot. Cả desktop lẫn
+#             server đều cần; thiếu nhóm này thì máy cài lại KHÔNG BOOT ĐƯỢC.
+#   desktop — chỉ máy role=desktop (Hyprland + DMS + GUI).
+#
+# Trong mỗi tầng lại chia theo package manager. Script cài chọn key theo OS/distro.
 packages:
-  common:
-    - zsh
-    - git
-    - neovim
-    - tmux
-    - fzf
-    - ripgrep
-    - zoxide
-    - eza
-    - bat
-    - unzip
-    - curl
-  apt:
-    - alacritty
-    - kitty
-    - build-essential
-    - python3
-    - python3-pip
-  pacman:
-    - alacritty
-    - kitty
-    - wezterm
-    - python
-    - base-devel
-  brew:
-    - fd
-    - lazygit
-    - node
-    - python
-    - tree-sitter
-  brew_cask:
-    - font-jetbrains-mono-nerd-font
+
+  cli:
+    # Tên giống nhau trên mọi package manager
+    common:
+      - zsh
+      - git
+      - neovim
+      - tmux
+      - fzf
+      - ripgrep
+      - zoxide
+      - eza
+      - bat
+      - unzip
+      - curl
+    pacman:
+      - alacritty
+      - kitty
+      - wezterm
+      - ghostty
+      - python
+      - base-devel
+      - starship
+      - chezmoi
+      - github-cli
+      - htop
+      - wget
+      - nano
+      - socat
+      - jq
+    apt:
+      - alacritty
+      - kitty
+      - build-essential
+      - python3
+      - python3-pip
+    brew:
+      - fd
+      - lazygit
+      - node
+      - python
+
+  system:
+    pacman:
+      # Boot & kernel — thiếu là máy cài lại không boot
+      - linux
+      - linux-firmware
+      - grub
+      - efibootmgr
+      - amd-ucode
+      - btrfs-progs
+      - zram-generator
+      # Mạng
+      - networkmanager
+      # Snapshot / rollback — xem README mục "Snapshot & Rollback"
+      - snapper
+      - snap-pac
+      - grub-btrfs
+      - inotify-tools
+
+  desktop:
+    pacman:
+      # Hyprland. hyprlock/hypridle/hyprpolkitagent/hyprsunset/hyprpaper đã bỏ:
+      # DMS lo lock screen, idle/sleep, polkit agent, night mode và wallpaper.
+      - hyprland
+      - xdg-desktop-portal-hyprland
+      - uwsm
+      - sddm
+      # Shell: DankMaterialShell (thay waybar + rofi + fuzzel + swaync + wlogout).
+      # dms-shell-hyprland kéo theo dms-shell, quickshell, dgop, accountsservice.
+      - dms-shell-hyprland
+      - matugen              # DMS dùng để sinh theme Material You từ wallpaper
+      - cava                 # audio visualizer trong DMS
+      - wtype                # DMS paste từ lịch sử clipboard
+      - kimageformats        # thêm định dạng ảnh cho wallpaper
+      - qt6ct                # để DMS theme được app Qt
+      # Đồ hoạ: laptop lai AMD Picasso iGPU (amdgpu) + NVIDIA GTX 1650 (nouveau).
+      # SDDM chạy trên X11 nên vẫn cần DDX driver.
+      - xorg-server
+      - xf86-video-amdgpu
+      - xf86-video-nouveau
+      - mesa
+      - vulkan-radeon
+      # Wayland utils
+      - wl-clipboard
+      - grim
+      - slurp
+      - swappy
+      - brightnessctl
+      - playerctl
+      - wireplumber
+      - pavucontrol
+      # Bluetooth & nguồn
+      - bluez
+      - bluez-utils
+      - blueman
+      - power-profiles-daemon
+      # Apps
+      - nautilus
+      - dolphin
+      # Gõ tiếng Việt — trigger Alt+space, xem .config/fcitx5/
+      - fcitx5
+      - fcitx5-configtool
+      - fcitx5-bamboo
+      - fcitx5-gtk
+      - fcitx5-qt
+      # Fonts. DMS settings.json trỏ tới "Inter Variable" và "Fira Code".
+      - inter-font
+      - ttf-fira-code
+      - ttf-jetbrains-mono-nerd
+      - noto-fonts
+      - noto-fonts-cjk
+      - noto-fonts-emoji
+      # Theming
+      - papirus-icon-theme
+      - adw-gtk-theme        # thay adw-gtk3 (AUR cũ đã bị xoá, nay có trong extra)
+    aur:
+      # awww / wlogout / hyprshot / kde-material-you-colors đã bỏ: DMS lo hết.
+      # Đã gỡ 3 gói AUR không còn tồn tại (kiểm tra qua AUR RPC 2026-08-29):
+      #   adw-gtk3 -> extra/adw-gtk-theme; ttf-google-sans-flex và
+      #   wezterm-cursor-trail không còn gói thay thế.
+      - hyprswitch                        # alt-tab, DMS không thay thế
+      - ttf-material-symbols-variable-git
+      - google-chrome

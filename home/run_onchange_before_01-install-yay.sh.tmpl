@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# yay chỉ dùng cho AUR, mà AUR chỉ nằm ở tầng desktop -> guard cả distro lẫn role.
+# Không có guard thì trên Ubuntu/macOS script chạy `sudo pacman` rồi `set -e`
+# làm hỏng cả lượt chezmoi apply.
+{{- if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "arch") (eq .role "desktop") }}
+set -euo pipefail
+
+if command -v yay >/dev/null 2>&1; then
+  exit 0
+fi
+
+echo "Installing yay..."
+sudo pacman -S --needed --noconfirm base-devel git
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+git clone --depth 1 https://aur.archlinux.org/yay-bin.git "$tmp/yay-bin"
+cd "$tmp/yay-bin"
+makepkg -si --noconfirm
+{{- else }}
+: # không phải Arch desktop — bỏ qua
+{{- end }}

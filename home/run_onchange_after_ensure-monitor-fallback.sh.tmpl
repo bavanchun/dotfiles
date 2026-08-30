@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# machine: {{ .machine }} role={{ .role }}
+# monitors-*.conf chỉ có nghĩa với Hyprland -> chỉ chạy trên máy desktop.
+{{- if eq .role "desktop" }}
+set -euo pipefail
+
+conf="$HOME/.config/hypr/monitors-{{ .machine }}.conf"
+if [[ ! -f "$conf" ]]; then
+  mkdir -p "$(dirname "$conf")"
+  printf '# Auto-generated fallback monitor config\n# Replace with your actual monitor setup\nmonitor = , preferred, auto, 1\n' > "$conf"
+  echo "Created fallback monitor config at $conf"
+fi
+{{- else }}
+: # máy cli — không có Hyprland
+{{- end }}

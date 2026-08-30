@@ -1,0 +1,39 @@
+[Hotkey]
+# Enumerate when press trigger key repeatedly
+EnumerateWithTriggerKeys=True
+# Enumerate Input Method Group forward
+EnumerateGroupForwardKeys=
+# Enumerate Input Method Group backward
+EnumerateGroupBackwardKeys=
+# Skip first input method while enumerating
+EnumerateSkipFirst=False
+
+[Hotkey/TriggerKeys]
+0=Alt+space
+
+[Hotkey/AltTriggerKeys]
+0=Shift_L
+
+[Hotkey/EnumerateForwardKeys]
+0=Control+Shift_L
+
+[Hotkey/EnumerateBackwardKeys]
+0=Control+Shift_R
+
+[Hotkey/PrevPage]
+0=Up
+
+[Hotkey/NextPage]
+0=Down
+
+[Behavior]
+# Active By Default
+ActiveByDefault=False
+# Share Input State: No/All/Program
+ShareInputState=No
+# Show preedit in application
+PreeditEnabledByDefault=True
+# Show Input Method Information when switch input method
+ShowInputMethodInformation=True
+# Default page size
+DefaultPageSize=5

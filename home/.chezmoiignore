@@ -1,3 +1,19 @@
+# LƯU Ý QUAN TRỌNG: .chezmoiignore khớp theo đường dẫn ĐÍCH (".config/...")
+# chứ KHÔNG phải đường dẫn nguồn ("dot_config/..."). Repo dotconfig-arch cũ ghi
+# nhầm kiểu nguồn nên toàn bộ dòng ignore ở đó vô tác dụng.
+# Kiểm chứng: chezmoi managed --source <src> --destination <dest>
+
+# ── Thư mục phụ trợ: không đổ vào $HOME ──────────────────────────────────────
+# (README.md và plans/ nằm NGOÀI source dir nhờ .chezmoiroot=home, nên không
+#  cần ignore — chezmoi không nhìn thấy chúng.)
+.claude/
+
+# yazi/ là NGUỒN cho symlink ~/.config/yazi (xem dot_config/symlink_yazi.tmpl),
+# nên phải nằm trong source dir — nhưng không được copy thẳng thành ~/yazi.
+yazi
+yazi/**
+
+# ── Backup / state ───────────────────────────────────────────────────────────
 **/*.bak
 **/*.bak2
 **/*.bak3
@@ -6,12 +22,31 @@
 **/*.old
 **/*.pre
 **/*.disabled
+**/*.rejected-*
 
-.claude/
+# ── File do máy tự sinh, không portable giữa các máy ──────────────────────────
+# matugen/DMS sinh lại từ wallpaper mỗi lần apply theme:
+.config/hypr/dms
+.config/hypr/dms/**
+.config/gtk-3.0/dank-colors.css
+.config/gtk-4.0/dank-colors.css
+.config/qt6ct/colors
+.config/qt6ct/colors/**
+.config/dgop/colors.json
+# nwg-displays sinh:
+.config/hypr/monitors.conf
+# fcitx5: chỉ track config + profile, phần dưới là cache runtime:
+.config/fcitx5/conf
+.config/fcitx5/conf/**
 
-# Repo docs / stray dirs — không đổ thẳng vào $HOME
-README.md
-plans
-plans/**
-yazi
-yazi/**
+{{/* ── Tầng desktop: máy role=cli hoặc không phải Linux thì bỏ qua hẳn ───── */}}
+{{- if or (ne .role "desktop") (ne .chezmoi.os "linux") }}
+.config/hypr
+.config/hypr/**
+.config/xkb
+.config/xkb/**
+.config/fcitx5
+.config/fcitx5/**
+.config/DankMaterialShell
+.config/DankMaterialShell/**
+{{- end }}

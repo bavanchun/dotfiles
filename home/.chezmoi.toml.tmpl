@@ -1,14 +1,27 @@
+{{- /* Omarchy tự quản lý config của nó và có repo riêng (dotconfig-omarchy). */ -}}
 {{- if stat "/usr/share/omarchy/version" -}}
-{{-   fail "This host runs Omarchy — use bavanchun/dotconfig-omarchy instead. See README." -}}
+{{-   fail "Máy này chạy Omarchy — dùng bavanchun/dotconfig-omarchy. Xem README." -}}
 {{- end -}}
 
+{{- /* Đoán vai trò làm giá trị mặc định cho prompt. */ -}}
+{{- $guess := "cli" -}}
+{{- if or (stat "/usr/bin/Hyprland") (stat "/usr/bin/hyprland") (env "WAYLAND_DISPLAY") -}}
+{{-   $guess = "desktop" -}}
+{{- end -}}
+
+{{- /* promptChoiceOnce chứ không phải promptChoice: chỉ hỏi lần đầu, các lần
+       `chezmoi init` sau sẽ dùng lại giá trị đã lưu trong config. */ -}}
+{{- $role := promptChoiceOnce . "role" "Vai trò máy này (desktop = có compositor; cli = server/WSL/container)" (list "desktop" "cli") $guess -}}
+{{- $terminal := promptChoiceOnce . "terminal" "Terminal chính" (list "wezterm" "kitty" "alacritty" "ghostty" "none") "wezterm" -}}
+
 [data]
-  machine = {{ .chezmoi.hostname | quote }}
-  terminal = {{ promptChoice "terminal" (list "wezterm" "kitty" "alacritty" "none") "wezterm" | quote }}
+  machine  = {{ .chezmoi.hostname | quote }}
+  role     = {{ $role | quote }}
+  terminal = {{ $terminal | quote }}
 
 [git]
   autoCommit = false
   autoPush = false
 
 [sourceVCS]
-  url = "git@github.com:bavanchun/dotconfig-term.git"
+  url = "git@github.com:bavanchun/dotfiles.git"

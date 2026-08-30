@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# packages hash: {{ .packages | toJson | sha256sum }} role={{ .role }} terminal={{ .terminal }}
+#
+# Cài package theo TẦNG (xem .chezmoidata/packages.yaml):
+#   cli     -> mọi máy
+#   system  -> mọi máy Arch (boot/kernel/mạng/snapshot)
+#   desktop -> chỉ role=desktop
+set -euo pipefail
+
+{{ if eq .chezmoi.os "linux" -}}
+{{-   if eq .chezmoi.osRelease.id "arch" }}
+pacman_pkgs=(
+{{-     range .packages.cli.common }}
+  {{ . | quote }}
+{{-     end }}
+{{-     range .packages.cli.pacman }}
+  {{ . | quote }}
+{{-     end }}
+{{-     range .packages.system.pacman }}
+  {{ . | quote }}
+{{-     end }}
+{{-     if eq .role "desktop" }}
+{{-       range .packages.desktop.pacman }}
+  {{ . | quote }}
+{{-       end }}
+{{-     end }}
+)
+echo "==> pacman: ${#pacman_pkgs[@]} package"
+sudo pacman -S --needed --noconfirm "${pacman_pkgs[@]}"
+{{-     if eq .role "desktop" }}
+
+aur_pkgs=(
+{{-       range .packages.desktop.aur }}
+  {{ . | quote }}
+{{-       end }}
+)
+echo "==> AUR: ${#aur_pkgs[@]} package"
+yay -S --needed --noconfirm --removemake "${aur_pkgs[@]}"
+{{-     end }}
+
+{{-   else if eq .chezmoi.osRelease.id "ubuntu" }}
+# Ubuntu chỉ có tầng cli — tầng desktop bám chặt vào Arch (Hyprland + AUR).
+sudo apt update
+sudo apt install -y \
+{{-     range .packages.cli.common }} {{ . }}{{ end }} \
+{{-     range .packages.cli.apt }} {{ . }}{{ end }}
+
+if ! command -v wezterm >/dev/null 2>&1; then
+  flatpak install -y flathub org.wezfurlong.wezterm 2>/dev/null || \
+    echo "wezterm: cài tay từ https://wezfurlong.org/wezterm/install/linux.html"
+fi
+{{-   else }}
+echo "Bỏ qua: distro {{ .chezmoi.osRelease.id }} chưa được hỗ trợ"
+{{-   end }}
+
+{{- else if eq .chezmoi.os "darwin" }}
+if ! command -v brew >/dev/null 2>&1; then
+  echo "Bỏ qua: chưa có Homebrew. Cài trước tại https://brew.sh"
+  exit 0
+fi
+if ! xcode-select -p >/dev/null 2>&1; then
+  echo "Cảnh báo: thiếu Xcode CLT. Chạy: xcode-select --install"
+  echo "(neovim cần make/clang để build plugin như telescope-fzf-native)"
+fi
+
+brew install \
+{{-   range .packages.cli.common }} {{ . }}{{ end }} \
+{{-   range .packages.cli.brew }} {{ . }}{{ end }}
+
+{{-   if ne .terminal "none" }}
+brew install --cask {{ .terminal }}
+{{-   end }}
+
+{{- else }}
+echo "Bỏ qua: OS {{ .chezmoi.os }} chưa được hỗ trợ"
+{{- end }}
