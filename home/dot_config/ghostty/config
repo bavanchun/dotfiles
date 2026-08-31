@@ -50,5 +50,5 @@ keybind = cmd+up=jump_to_prompt:-1
 keybind = cmd+down=jump_to_prompt:1
 
 # ── QoL keybinds ──
-keybind = cmd+shift+r=reload_config
+keybind = ctrl+shift+r=reload_config
 keybind = cmd+k=clear_screen
