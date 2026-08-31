@@ -38,6 +38,9 @@ ShareInputState=Program
 # Show preedit in application
 PreeditEnabledByDefault=True
 # Show Input Method Information when switch input method
-ShowInputMethodInformation=True
+# Tắt: OSD "keyboard_layout" của Noctalia đã hiện tên IM ở top_center rồi, cái
+# popup "en"/"vi" nổi trên caret của fcitx5 chỉ là báo trùng.
+ShowInputMethodInformation=False
+ShowInputMethodInformationWhenFocusIn=False
 # Default page size
 DefaultPageSize=5
