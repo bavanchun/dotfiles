@@ -1,0 +1,162 @@
+Subject: [PATCH] bluetooth: show display-only pairing prompts (DisplayPasskey)
+
+BlueZ calls Agent1.DisplayPasskey when the peer is a keyboard: the passkey must
+be shown here and typed on the keyboard. It is fire-and-forget, so the agent
+keeps no reply context for it and hasPendingRequest() returned false -- which is
+exactly what the control center uses to decide whether to show the pairing card.
+Result: pairing a Bluetooth keyboard displayed nothing at all and always timed
+out.
+
+ - hasPendingRequest() also reports display-only requests.
+ - Cancel/Release retire them (BlueZ never replies to them), and the tab retires
+   them once the device reports itself paired.
+ - Reject on a display-only prompt calls Device1.CancelPairing instead of only
+   dropping local state.
+ - The prompt shows how many digits the peripheral has echoed back (entered).
+ - A pairing request raises the control center on its Bluetooth tab when no
+   panel is open, mirroring the polkit agent, instead of being dropped silently.
+
+diff --git a/src/app/application_services.cpp b/src/app/application_services.cpp
+index ef940cf5e..52fa4a32f 100644
+--- a/src/app/application_services.cpp
++++ b/src/app/application_services.cpp
+@@ -1307,7 +1307,14 @@ void Application::initSystemBusServices() {
+                                               shouldRefreshControlCenter](const BluetoothPairingRequest& /*request*/) {
+           if (shouldRefreshControlCenter()) {
+             m_panelManager.refresh();
++            return;
+           }
++          // A pairing request is only answerable while the prompt is on screen, and
++          // BlueZ gives it ~30s. Surface the control center on its Bluetooth tab the
++          // way the polkit agent raises its own panel, instead of dropping the
++          // request silently when the panel happens to be closed.
++          wl_output* output = m_compositorPlatform.preferredInteractiveOutput(std::chrono::milliseconds(1200));
++          m_panelManager.openPanel("control-center", PanelOpenRequest{.output = output, .context = "bluetooth"});
+         });
+       } catch (const std::exception& e) {
+         kLog.warn("bluetooth agent disabled: {}", e.what());
+diff --git a/src/dbus/bluetooth/bluetooth_agent.cpp b/src/dbus/bluetooth/bluetooth_agent.cpp
+index fc994678b..31a6f19c4 100644
+--- a/src/dbus/bluetooth/bluetooth_agent.cpp
++++ b/src/dbus/bluetooth/bluetooth_agent.cpp
+@@ -170,7 +170,7 @@ struct BluetoothAgent::Impl {
+   }
+ 
+   void onCancel() {
+-    if (!hasPending()) {
++    if (!hasPending() && pending.kind == BluetoothPairingKind::None) {
+       return;
+     }
+     kLog.debug("BlueZ canceled pending pairing");
+@@ -183,7 +183,7 @@ BluetoothAgent::BluetoothAgent(SystemBus& bus) : m_impl(std::make_unique<Impl>(b
+ 
+   m_impl->object
+       ->addVTable(
+-          sdbus::registerMethod("Release").implementedAs([]() {}),
++          sdbus::registerMethod("Release").implementedAs([this]() { m_impl->cancelPending(); }),
+           sdbus::registerMethod("RequestPinCode")
+               .withInputParamNames("device")
+               .withOutputParamNames("pincode")
+@@ -294,7 +294,13 @@ void BluetoothAgent::cancelPending() {
+   }
+ }
+ 
+-bool BluetoothAgent::hasPendingRequest() const noexcept { return m_impl != nullptr && m_impl->hasPending(); }
++// DisplayPasskey / DisplayPinCode are fire-and-forget on the BlueZ side, so
++// hasPending() (which tracks reply contexts) is false for them. The UI still has
++// something to show, so report those as pending too — otherwise the passkey a
++// keyboard expects the user to type is never displayed anywhere.
++bool BluetoothAgent::hasPendingRequest() const noexcept {
++  return m_impl != nullptr && (m_impl->hasPending() || m_impl->pending.kind != BluetoothPairingKind::None);
++}
+ 
+ BluetoothPairingRequest BluetoothAgent::pendingRequest() const {
+   return m_impl != nullptr ? m_impl->pending : BluetoothPairingRequest{};
+diff --git a/src/shell/control_center/tabs/bluetooth_tab.cpp b/src/shell/control_center/tabs/bluetooth_tab.cpp
+index 6bc079d75..506bea735 100644
+--- a/src/shell/control_center/tabs/bluetooth_tab.cpp
++++ b/src/shell/control_center/tabs/bluetooth_tab.cpp
+@@ -457,6 +457,12 @@ std::unique_ptr<Flex> BluetoothTab::create() {
+           .variant = ButtonVariant::Ghost,
+           .onClick = [this]() {
+             if (m_agent != nullptr) {
++              // DisplayPasskey holds no BlueZ reply context, so dropping it locally
++              // would leave the adapter pairing. Abort it on the device instead.
++              const auto req = m_agent->pendingRequest();
++              if (req.kind == BluetoothPairingKind::DisplayPasskey && m_service != nullptr) {
++                m_service->cancelPair(req.devicePath);
++              }
+               m_agent->rejectConfirm();
+             }
+             PanelManager::instance().refresh();
+@@ -571,21 +577,32 @@ void BluetoothTab::syncPairingCard() {
+   if (m_pairingCard == nullptr) {
+     return;
+   }
+-  const bool hasPending = m_agent != nullptr && m_agent->hasPendingRequest();
+-  m_pairingCard->setVisible(hasPending);
+-  if (!hasPending) {
+-    return;
+-  }
+-  const auto req = m_agent->pendingRequest();
++  bool hasPending = m_agent != nullptr && m_agent->hasPendingRequest();
++  const auto req = hasPending ? m_agent->pendingRequest() : BluetoothPairingRequest{};
+   std::string alias = req.devicePath;
+-  if (m_service != nullptr) {
++  bool devicePaired = false;
++  if (hasPending && m_service != nullptr) {
+     for (const auto& d : m_service->devices()) {
+-      if (d.path == req.devicePath && !d.alias.empty()) {
+-        alias = d.alias;
++      if (d.path == req.devicePath) {
++        devicePaired = d.paired;
++        if (!d.alias.empty()) {
++          alias = d.alias;
++        }
+         break;
+       }
+     }
+   }
++  // A DisplayPasskey prompt is informational: BlueZ never replies to it and never
++  // takes it back on success, so retire it once the device is actually paired.
++  const bool displayOnly = req.kind == BluetoothPairingKind::DisplayPasskey;
++  if (hasPending && displayOnly && devicePaired) {
++    m_agent->cancelPending();
++    hasPending = false;
++  }
++  m_pairingCard->setVisible(hasPending);
++  if (!hasPending) {
++    return;
++  }
+ 
+   if (m_pairingTitle != nullptr) {
+     m_pairingTitle->setText(i18n::tr("control-center.bluetooth.pair-title", "device", alias));
+@@ -609,9 +626,16 @@ void BluetoothTab::syncPairingCard() {
+     case BluetoothPairingKind::DisplayPinCode:
+       m_pairingDetail->setText(i18n::tr("control-center.bluetooth.pairing-detail.display-pin"));
+       break;
+-    case BluetoothPairingKind::DisplayPasskey:
+-      m_pairingDetail->setText(i18n::tr("control-center.bluetooth.pairing-detail.display-passkey"));
++    case BluetoothPairingKind::DisplayPasskey: {
++      // `entered` is how many digits the peripheral has echoed back so far; showing
++      // it turns a silent 6-digit code into visible typing feedback.
++      std::string detail = i18n::tr("control-center.bluetooth.pairing-detail.display-passkey");
++      if (req.entered > 0) {
++        detail += " (" + std::to_string(req.entered) + "/6)";
++      }
++      m_pairingDetail->setText(detail);
+       break;
++    }
+     case BluetoothPairingKind::PinCode:
+       m_pairingDetail->setText(i18n::tr("control-center.bluetooth.pairing-detail.pin-code"));
+       break;
+@@ -637,6 +661,9 @@ void BluetoothTab::syncPairingCard() {
+   if (m_pairingInputRow != nullptr) {
+     m_pairingInputRow->setVisible(needsInput);
+   }
++  if (m_pairingAccept != nullptr) {
++    m_pairingAccept->setVisible(!displayOnly);
++  }
+ }
+ 
+ // Identity of the built list: which rows exist, in which order, and which controls

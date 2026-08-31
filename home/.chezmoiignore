@@ -63,6 +63,10 @@ yazi/**
 .config/hypr/noctalia.lua
 .config/noctalia
 .config/noctalia/**
+# Nguồn để build lại gói noctalia đã vá lỗi pairing Bluetooth: chỉ có ý nghĩa
+# trên máy chạy Noctalia.
+.local/src/noctalia-bt-fix
+.local/src/noctalia-bt-fix/**
 {{- end }}
 {{- if ne .shell "ariadnev" }}
 .config/hypr/hyprland.conf
