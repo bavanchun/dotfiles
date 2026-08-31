@@ -1,5 +1,5 @@
 # ── Appearance ──
-theme = light:Catppuccin Latte,dark:Catppuccin Mocha
+theme = noctalia
 font-family = "JetBrainsMono Nerd Font Mono"
 font-size = 14
 font-thicken = true
@@ -19,7 +19,7 @@ selection-invert-fg-bg = true
 
 # ── Behavior / QoL ──
 copy-on-select = clipboard
-confirm-close-surface = true
+confirm-close-surface = false
 window-save-state = always
 mouse-hide-while-typing = true
 scrollback-limit = 100000000
