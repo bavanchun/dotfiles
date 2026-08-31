@@ -42,7 +42,7 @@ monitors                = []
 
 # ── OSD (volume / brightness / wifi ...) ────────────────────
 [osd]
-position           = "bottom_center"
+position           = "top_center"
 orientation        = "horizontal"
 scale              = 1.0
 background_opacity = 0.97

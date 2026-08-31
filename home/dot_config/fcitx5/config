@@ -11,8 +11,9 @@ EnumerateSkipFirst=False
 [Hotkey/TriggerKeys]
 0=Alt+space
 
+# Tắt Shift_L đơn lẻ toggle IME: Hyprland grab phím trong các bind SUPER+SHIFT+*,
+# fcitx5 chỉ thấy Shift press/release nên tưởng là AltTrigger -> đổi ngôn ngữ nhầm.
 [Hotkey/AltTriggerKeys]
-0=Shift_L
 
 [Hotkey/EnumerateForwardKeys]
 0=Control+Shift_L
@@ -30,7 +31,10 @@ EnumerateSkipFirst=False
 # Active By Default
 ActiveByDefault=False
 # Share Input State: No/All/Program
-ShareInputState=No
+# Program = nhớ IM theo từng chương trình (per-app). Alt+space trong Chrome sẽ
+# không đụng tới trạng thái bàn phím ở Ghostty. Đổi focus giữa các app có thể
+# trông như "tự đổi ngôn ngữ" — nhưng đó chính là mục đích.
+ShareInputState=Program
 # Show preedit in application
 PreeditEnabledByDefault=True
 # Show Input Method Information when switch input method
