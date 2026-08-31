@@ -45,7 +45,7 @@ hl.monitor({
 ---------------------
 
 -- Set programs that you use
-local terminal    = "kitty"
+local terminal    = "ghostty"
 local fileManager = "dolphin"
 local menu        = "noctalia msg panel-toggle launcher"
 
@@ -283,21 +283,27 @@ hl.device({
 local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 
 -- Example binds, see https://wiki.hypr.land/Configuring/Basics/Binds/ for more
-hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd(terminal))
-local closeWindowBind = hl.bind(mainMod .. " + C", hl.dsp.window.close())
+hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(terminal))
+local closeWindowBind = hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 -- closeWindowBind:set_enabled(false)
 hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
-hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))    -- dwindle only
+hl.bind(mainMod .. " + T", hl.dsp.layout("togglesplit"))    -- dwindle only (dời từ J vì J dùng cho focus down)
 
 -- Move focus with mainMod + arrow keys
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
 hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
 hl.bind(mainMod .. " + up",    hl.dsp.focus({ direction = "up" }))
 hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }))
+
+-- ... và vim-style hjkl
+hl.bind(mainMod .. " + H", hl.dsp.focus({ direction = "left" }))
+hl.bind(mainMod .. " + J", hl.dsp.focus({ direction = "down" }))
+hl.bind(mainMod .. " + K", hl.dsp.focus({ direction = "up" }))
+hl.bind(mainMod .. " + L", hl.dsp.focus({ direction = "right" }))
 
 -- Switch workspaces with mainMod + [0-9]
 -- Move active window to a workspace with mainMod + SHIFT + [0-9]
@@ -445,7 +451,7 @@ hl.bind(mainMod .. " + SHIFT + C",     hl.dsp.exec_cmd(ipc .. "panel-toggle laun
 hl.bind("ALT + Tab",                   hl.dsp.exec_cmd(ipc .. "window-switcher"))
 
 -- ── Keybinds: khoá màn hình & toggles ──────────────────────
-hl.bind(mainMod .. " + L",             hl.dsp.exec_cmd(ipc .. "session lock"))
+hl.bind(mainMod .. " + SHIFT + L",     hl.dsp.exec_cmd(ipc .. "session lock"))  -- dời từ SUPER+L vì L dùng cho focus right
 hl.bind(mainMod .. " + SHIFT + N",     hl.dsp.exec_cmd(ipc .. "notification-dnd-toggle"))
 hl.bind(mainMod .. " + SHIFT + I",     hl.dsp.exec_cmd(ipc .. "caffeine-toggle"))
 hl.bind(mainMod .. " + SHIFT + T",     hl.dsp.exec_cmd(ipc .. "theme-mode-toggle"))
@@ -455,6 +461,8 @@ hl.bind(mainMod .. " + SHIFT + B",     hl.dsp.exec_cmd(ipc .. "bar-toggle"))
 hl.bind("Print",                       hl.dsp.exec_cmd(ipc .. "screenshot-region"))
 hl.bind("SHIFT + Print",               hl.dsp.exec_cmd(ipc .. "screenshot-fullscreen"))
 hl.bind(mainMod .. " + Print",         hl.dsp.exec_cmd(ipc .. "screenshot-fullscreen all"))
+-- CTRL+SHIFT+4: quen tay macOS — chọn vùng chụp (giống "Print" ở trên).
+hl.bind("CTRL + SHIFT + 4",            hl.dsp.exec_cmd(ipc .. "screenshot-region"))
 
 -- ── Workspaces cố định (hiện cả khi trống trong widget) ────
 for i = 1, 5 do
